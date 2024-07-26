@@ -1,0 +1,160 @@
+/* Navbar styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  margin-right: 20px;
+}
+
+.logo {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.navbar-center {
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.search-button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.cart-icon {
+  text-decoration: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.cart-icon .fa-shopping-cart {
+  font-size: 1.2rem;
+  margin-right: 5px;
+}
+
+.cart-count {
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  position: absolute;
+  top: -5px;
+  right: -10px;
+}
+
+.checkout-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Secondary Navbar styles */
+.secondary-navbar {
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+}
+
+.category-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-item {
+  position: relative;
+  margin-right: 20px;
+}
+
+.category-link {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  display: block;
+}
+
+.category-link:hover {
+  background-color: #333;
+}
+
+.subcategory-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000; /* Ensure dropdown appears above other content */
+}
+
+.category-item:hover .subcategory-dropdown {
+  display: block;
+}
+
+.subcategory-link {
+  display: block;
+  padding: 10px;
+  color: black;
+  text-decoration: none;
+}
+
+.subcategory-link:hover {
+  background-color: #f2f2f2;
+}
+
+.navbar-search {
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  margin-right: 20px;
+}
+
+.navbar-cart {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  position: relative;
+}
+
+.cart-icon {
+  font-size: 24px;
+  margin-right: 5px;
+}
