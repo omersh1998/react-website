@@ -10,4 +10,25 @@
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
   }
+
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.loading-spinner {
+  text-align: center;
+  font-size: 24px;
+  margin-top: 50px;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+}
+  
   

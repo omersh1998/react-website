@@ -25,9 +25,19 @@ db.once('open', () => {
 // Routes
 app.get('/all-products', async (req, res) => {
   try {
-    const { offset, limit, sortBy } = req.query;
+    const { offset, limit, sortBy, category, subcategory } = req.query;
+
+    console.log(req.url);
 
     let query = Product.find();
+
+    if (category) {
+      query = query.where('category').equals(category); // Filter by category
+    }
+
+    if (subcategory) {
+      query = query.where('subcategory').equals(subcategory); // Filter by subcategory
+    }
 
     if (offset) {
       query = query.skip(parseInt(offset));
@@ -47,6 +57,7 @@ app.get('/all-products', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 app.get('/product/:id', async (req, res) => {
   try {
