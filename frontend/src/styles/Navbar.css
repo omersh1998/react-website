@@ -32,11 +32,12 @@
   padding: 8px;
   border: none;
   border-radius: 4px;
+  font-size: 16px; /* Adjust font size if needed */
 }
 
 .suggestions-list {
   position: absolute;
-  top: 100%;
+  top: 100%; /* Position directly below the search bar */
   left: 0;
   width: 100%;
   background-color: white;
@@ -45,12 +46,14 @@
   max-height: 200px;
   overflow-y: auto;
   z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for better visibility */
 }
 
 .suggestions-list li {
   padding: 8px;
   cursor: pointer;
   color: black;
+  list-style: none; /* Remove default list styling */
 }
 
 .suggestions-list li:hover {
@@ -113,4 +116,34 @@
 
 .subcategory-link:hover {
   background-color: #f0f0f0;
+}
+
+/* Navbar cart icon styles */
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-cart {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}
+
+.cart-icon {
+  font-size: 24px; /* Adjust size as needed */
+}
+
+.cart-count {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px; /* Adjust padding to make the badge smaller */
+  font-size: 12px; /* Adjust font size to be smaller */
+  font-weight: bold;
 }

@@ -1,6 +1,5 @@
-// src/components/Navbar.js
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import axios from '../axiosConfig';
 import '../styles/Navbar.css';
@@ -9,6 +8,7 @@ const Navbar = ({ cartItemCount, onSearch }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
 
   const categories = [
@@ -24,11 +24,13 @@ const Navbar = ({ cartItemCount, onSearch }) => {
         try {
           const response = await axios.get('/search', { params: { name: query } });
           setSuggestions(response.data.slice(0, 10)); // Limit to 10 suggestions
+          setShowSuggestions(true);
         } catch (err) {
           console.error('Error fetching suggestions:', err);
         }
       } else {
         setSuggestions([]);
+        setShowSuggestions(false);
       }
     };
 
@@ -38,6 +40,13 @@ const Navbar = ({ cartItemCount, onSearch }) => {
 
     return () => clearTimeout(delayDebounceFn); // Cleanup on unmount or query change
   }, [query]);
+
+  useEffect(() => {
+    // Reset search query and suggestions on location change
+    setQuery('');
+    setSuggestions([]);
+    setShowSuggestions(false);
+  }, [location.pathname]);
 
   const handleCategoryHover = (categoryId) => {
     const dropdown = document.getElementById(`dropdown-${categoryId}`);
@@ -59,19 +68,33 @@ const Navbar = ({ cartItemCount, onSearch }) => {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setQuery(suggestion.name); // Use the name field of the suggestion object
+    setQuery('');
     setShowSuggestions(false);
-    onSearch(suggestion.name); // Call the onSearch prop with the search term
-    navigate('/');
+    navigate(`/search?name=${encodeURIComponent(suggestion)}`); // Navigate to search results
+    onSearch(suggestion); // Trigger the search
   };
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      onSearch(query); // Call the onSearch prop with the search term
+      setQuery('');
+      navigate(`/search?name=${encodeURIComponent(query)}`); // Navigate to search results
+      onSearch(query); // Trigger the search
       setShowSuggestions(false);
-      navigate('/');
     }
   };
+
+  const handleClickOutside = (event) => {
+    if (event.target.closest('.search-container') === null) {
+      setShowSuggestions(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div>
@@ -86,25 +109,22 @@ const Navbar = ({ cartItemCount, onSearch }) => {
           <div className="search-container">
             <input
               type="text"
+              placeholder="Search..."
+              className="search-bar"
               value={query}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Search..."
-              className="search-bar"
             />
             {showSuggestions && suggestions.length > 0 && (
               <ul className="suggestions-list">
-                {suggestions.map((suggestion, index) => (
-                  <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-                    {suggestion.name} {/* Display only the name field */}
+                {suggestions.map(suggestion => (
+                  <li key={suggestion._id} onClick={() => handleSuggestionClick(suggestion.name)}>
+                    {suggestion.name}
                   </li>
                 ))}
               </ul>
             )}
           </div>
-          <button className="search-button">
-            <i className="fa fa-search"></i>
-          </button>
         </div>
         <div className="navbar-right">
           <Link to="/cart" className="navbar-cart">

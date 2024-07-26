@@ -29,34 +29,42 @@ app.get('/all-products', async (req, res) => {
 
     console.log(req.url);
 
+    // Initialize query for all products
     let query = Product.find();
 
+    // Apply category filter if present
     if (category) {
-      query = query.where('category').equals(category); // Filter by category
+      query = query.where('category').regex(new RegExp(`^${category}$`, 'i'));
     }
 
+    // Apply subcategory filter if present, with case-insensitivity
     if (subcategory) {
-      query = query.where('subcategory').equals(subcategory); // Filter by subcategory
+      query = query.where('subcategory').regex(new RegExp(`^${subcategory}$`, 'i'));
     }
 
+    // Apply offset if present
     if (offset) {
       query = query.skip(parseInt(offset));
     }
 
+    // Apply limit if present
     if (limit) {
       query = query.limit(parseInt(limit));
     }
 
+    // Apply sorting if present
     if (sortBy) {
       query = query.sort(sortBy);
     }
 
+    // Execute query and return results
     const products = await query.exec();
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 
 app.get('/product/:id', async (req, res) => {

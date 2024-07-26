@@ -1,4 +1,3 @@
-// src/components/ProductList.js
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../axiosConfig'; // Import the configured Axios instance
@@ -6,7 +5,7 @@ import Product from './Product'; // Adjust the path as needed
 import LoadingSpinner from './LoadingSpinner';
 import '../styles/ProductList.css'; // For your styles
 
-const ProductList = ({ addToCart, searchQuery }) => {
+const ProductList = ({ addToCart }) => {
   const { category, subcategory } = useParams(); // Extracts category from URL params
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,22 +23,15 @@ const ProductList = ({ addToCart, searchQuery }) => {
         // Start a timer to show spinner for at least 300ms
         spinnerTimeout = setTimeout(() => setShowSpinner(true), 300);
 
-        // Construct query based on category, subcategory, or searchQuery
         let query = '/all-products';
-        const params = {};
-
-        if (searchQuery) {
-          params.name = searchQuery; // Use search query for the API
-        } else {
-          if (category) {
-            params.category = category;
-            if (subcategory) {
-              params.subcategory = subcategory;
-            }
+        if (category) {
+          query += `?category=${category}`;
+          if (subcategory) {
+            query += `&subcategory=${subcategory}`;
           }
         }
 
-        const response = await axios.get(query, { params });
+        const response = await axios.get(query);
         if (isMounted) {
           setProducts(response.data);
           setError(null);
@@ -64,7 +56,7 @@ const ProductList = ({ addToCart, searchQuery }) => {
       isMounted = false;
       clearTimeout(spinnerTimeout); // Clean up the timer on unmount
     };
-  }, [category, subcategory, searchQuery]); // Depend on searchQuery as well
+  }, [category, subcategory]);
 
   if (loading || showSpinner) {
     return <LoadingSpinner />; // Use the new loading spinner component
