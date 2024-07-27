@@ -31,4 +31,79 @@
   margin-top: 20px;
 }
   
-  
+/* ProductList styles */
+.product-list-container {
+  display: flex;
+  gap: 20px; /* Space between filters and products */
+  padding: 20px; /* Space from edges */
+}
+
+.products-main {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.no-results {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.product {
+  width: 100%; /* Adjust based on your product card width */
+  max-width: 300px; /* Adjust based on your design */
+}
+
+/* Filter Sidebar Styles */
+.filters-sidebar {
+  width: 250px; /* Adjust width as needed */
+  padding: 10px;
+  border-right: 1px solid #ccc;
+}
+
+.filter-category {
+  margin-bottom: 15px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.filter-category h4 {
+  margin: 0;
+  font-weight: bold;
+  position: relative;
+}
+
+.filter-category h4::after {
+  content: '▼'; /* Downward arrow */
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.filter-category.expanded h4::after {
+  content: '▲'; /* Upward arrow */
+}
+
+.filter-options {
+  display: none;
+  margin-top: 10px;
+}
+
+.filter-options.show {
+  display: block;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.filter-option input {
+  margin-right: 8px;
+}

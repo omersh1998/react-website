@@ -46,7 +46,6 @@ const Navbar = ({ cartItemCount, onSearch }) => {
           return item;
         });
         setCategories(mappedCategories);
-        console.log(mappedCategories);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }

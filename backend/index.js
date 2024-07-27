@@ -108,6 +108,33 @@ app.get('/all-categories', async (req, res) => {
   }
 });
 
+// Get the filters for the categories
+app.get('/filters', async (req, res) => {
+  const { category } = req.query;
+
+  if (!category) {
+    return res.status(400).json({ message: 'Category parameter is required' });
+  }
+
+  try {
+    // Use a case-insensitive regex to find the category
+    const categoryData = await Category.findOne({ name: new RegExp('^' + category + '$', 'i') }).exec();
+
+    if (!categoryData) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    console.log(categoryData);
+    console.log(categoryData.filters);
+    console.log(JSON.stringify(categoryData));
+
+    // Return only the filters for the specified category
+    res.json(categoryData.filters || []);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
