@@ -6,99 +6,65 @@ import LoadingSpinner from './LoadingSpinner';
 import '../styles/ProductList.css'; // For your styles
 
 const ProductList = ({ addToCart }) => {
-  const { category, subcategory } = useParams();
+  const { category, subcategory } = useParams(); // Extracts category from URL params
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Simplified loading state
   const [error, setError] = useState(null);
   const [showSpinner, setShowSpinner] = useState(true);
-  const [expandedFilter, setExpandedFilter] = useState(null);
   const [productCount, setProductCount] = useState(0);
+  const [expandedFilters, setExpandedFilters] = useState({}); // Track expanded filter categories
 
-  useEffect(() => {
-    let isMounted = true;
-    let spinnerTimeout;
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const queryParams = {
+        category,
+        subcategory,
+        filters: JSON.stringify(selectedFilters),
+      };
+      const response = await axios.get('/all-products', { params: queryParams });
+      setProducts(response.data);
+    } catch (err) {
+      setError('Failed to fetch products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        spinnerTimeout = setTimeout(() => setShowSpinner(true), 300);
+  const fetchCategoryFilters = async () => {
+    try {
+      const response = await axios.get(`/filters?category=${category}`);
+      setFilters(response.data);
+    } catch (err) {
+      setError('Failed to fetch filters');
+    }
+  };
 
-        // Build query with selected filters
-        const queryParams = {
+  const fetchProductCount = async () => {
+    try {
+      const response = await axios.get('/products-count', {
+        params: {
           category,
           subcategory,
           filters: JSON.stringify(selectedFilters),
-        };
-
-        const response = await axios.get('/all-products', { params: queryParams });
-        if (isMounted) {
-          setProducts(response.data);
-          setError(null);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError('Failed to fetch products');
-        }
-      } finally {
-        if (isMounted) {
-          clearTimeout(spinnerTimeout);
-          setLoading(false);
-          setTimeout(() => setShowSpinner(false), 300);
-        }
-      }
-    };
-
-    const fetchProductCount = async () => {
-      try {
-        const response = await axios.get('/products-count', {
-          params: {
-            category,
-            subcategory,
-            filters: JSON.stringify(selectedFilters),
-          },
-        });
-        setProductCount(response.data.count);
-      } catch (err) {
-        console.error('Failed to fetch product count:', err);
-      }
-    };
-
-    const fetchCategoryFilters = async () => {
-      try {
-        setLoading(true);
-        spinnerTimeout = setTimeout(() => setShowSpinner(true), 300);
-
-        const query = `/filters?category=${category}`;
-        const response = await axios.get(query);
-        if (isMounted) {
-          setFilters(response.data);
-          setError(null);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError('Failed to fetch filters');
-        }
-      } finally {
-        if (isMounted) {
-          clearTimeout(spinnerTimeout);
-          setLoading(false);
-          setTimeout(() => setShowSpinner(false), 300);
-        }
-      }
-    };
-
-    fetchProducts();
-    fetchProductCount();
-    if (category) {
-      fetchCategoryFilters();
+        },
+      });
+      setProductCount(response.data.count);
+    } catch (err) {
+      setError('Failed to fetch product count');
     }
+  };
 
-    return () => {
-      isMounted = false;
-      clearTimeout(spinnerTimeout);
+  useEffect(() => {
+    const fetchData = async () => {
+      setShowSpinner(true);
+      await Promise.all([fetchProducts(), fetchProductCount(), fetchCategoryFilters()]);
+      setShowSpinner(false);
     };
+
+    fetchData();
   }, [category, subcategory, selectedFilters]);
 
   const handleFilterChange = (filterName, value) => {
@@ -116,8 +82,11 @@ const ProductList = ({ addToCart }) => {
     });
   };
 
-  const handleCategoryClick = (filterName) => {
-    setExpandedFilter((prev) => (prev === filterName ? null : filterName));
+  const toggleFilterCategory = (filterName) => {
+    setExpandedFilters((prevState) => ({
+      ...prevState,
+      [filterName]: !prevState[filterName],
+    }));
   };
 
   if (loading || showSpinner) {
@@ -131,34 +100,34 @@ const ProductList = ({ addToCart }) => {
   return (
     <div className="product-list-container">
       <div className="filters-sidebar">
-        <div className="filters-header">
-          <h3>{productCount} Products Found</h3>
+        <div className="filter-count">
+          <h3>{productCount} products found</h3>
         </div>
-        {filters.map((filterCategory) => (
-          <div
-            key={filterCategory.name}
-            className={`filter-category ${expandedFilter === filterCategory.name ? 'expanded' : ''}`}
-          >
-            <h4 onClick={() => handleCategoryClick(filterCategory.name)}>
-              {filterCategory.name}
-            </h4>
+        <div className="filters">
+          {filters.map((filterCategory) => (
             <div
-              className={`filter-options ${expandedFilter === filterCategory.name ? 'show' : ''}`}
+              key={filterCategory.name}
+              className={`filter-category ${expandedFilters[filterCategory.name] ? 'expanded' : ''}`}
             >
-              {filterCategory.filters.map((filter) => (
-                <div key={filter} className="filter-option">
-                  <input
-                    type="checkbox"
-                    id={filter}
-                    checked={selectedFilters[filterCategory.name]?.includes(filter) || false}
-                    onChange={() => handleFilterChange(filterCategory.name, filter)}
-                  />
-                  <label htmlFor={filter}>{filter}</label>
-                </div>
-              ))}
+              <div className="filter-header" onClick={() => toggleFilterCategory(filterCategory.name)}>
+                <h4>{filterCategory.name}</h4>
+              </div>
+              <div className="filter-body">
+                {filterCategory.filters.map((filter) => (
+                  <div key={filter} className="filter-option">
+                    <input
+                      type="checkbox"
+                      id={filter}
+                      checked={selectedFilters[filterCategory.name]?.includes(filter) || false}
+                      onChange={() => handleFilterChange(filterCategory.name, filter)}
+                    />
+                    <label htmlFor={filter}>{filter}</label>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
       <div className="products-main">
         {products.length === 0 ? (
