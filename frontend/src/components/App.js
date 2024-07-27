@@ -16,6 +16,7 @@ const App = () => {
   const [expandedFilters, setExpandedFilters] = useState({});
   const [currentCategory, setCurrentCategory] = useState('');
   const [showFilters, setShowFilters] = useState(true);
+  const [isShowFilter, setIsShowFilter] = useState(false);
 
   const location = useLocation();
 
@@ -42,6 +43,13 @@ const App = () => {
     if (location.pathname === '/') {
       // Reset filters when navigating to home page
       setSelectedFilters({});
+    }
+
+    if (['/cart', '/product'].includes(location.pathname) || location.pathname.startsWith('/product')) {
+      // Reset filters when navigating to home page
+      setIsShowFilter(false);
+    } else {
+      setIsShowFilter(true);
     }
   }, [location.pathname]);
 
@@ -147,7 +155,7 @@ const App = () => {
     <div className="App">
       <Navbar cartItemCount={cartItemCount} onSearch={searchProducts} />
       <div className="container">
-        <div className={`filters-sidebar ${!showFilters ? 'hide-filters' : ''}`}>
+        {isShowFilter && <div className={`filters-sidebar ${!showFilters ? 'hide-filters' : ''}`}>
           {currentCategory && (
             <Filters 
               filters={filters}
@@ -157,8 +165,8 @@ const App = () => {
               expandedFilters={expandedFilters}
             />
           )}
-        </div>
-        <div className="products-main">
+        </div>}
+        <div className={isShowFilter ? "products-main" : "products-main flex-column"}>
           <Routes>
             <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} />} />
             <Route path="/cart" element={<ShoppingCart cart={cart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />

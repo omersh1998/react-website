@@ -6,7 +6,7 @@ const Product = ({ product, addToCart }) => {
   return (
     <div className="product">
       <Link to={`/product/${product._id}`} className="product-link">
-        <img src={product.image} alt={product.name} className="product-image" />
+        <img src={product.images[0]} alt={product.name} className="product-image" />
         <div className="product-info">
           <p className="product-name">{product.name}</p>
           <p className="product-price">${product.price.toFixed(2)}</p>

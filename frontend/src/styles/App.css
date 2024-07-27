@@ -59,4 +59,8 @@ li:hover {
   display: flex;
 }
 
+.products-main.flex-column {
+  flex-flow: column;
+}
+
 /* Other existing styles */

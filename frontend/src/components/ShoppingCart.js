@@ -2,7 +2,6 @@ import React from 'react';
 import '../styles/ShoppingCart.css';
 
 const ShoppingCart = ({ cart, onQuantityChange, onRemoveFromCart }) => {
-
   // Calculate total number of items in the cart
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
