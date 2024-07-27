@@ -26,7 +26,7 @@ db.once('open', () => {
 // Routes
 app.get('/all-products', async (req, res) => {
   try {
-    const { offset, limit, sortBy, category, subcategory } = req.query;
+    const { offset, limit, sortBy, category, subcategory, filters } = req.query;
 
     console.log(req.url);
 
@@ -56,6 +56,21 @@ app.get('/all-products', async (req, res) => {
     // Apply sorting if present
     if (sortBy) {
       query = query.sort(sortBy);
+    }
+
+    if (filters) {
+      const filterConditions = JSON.parse(filters);
+      const orConditions = [];
+
+      for (const [key, values] of Object.entries(filterConditions)) {
+        if (values.length > 0) {
+          orConditions.push({ [`info.${key}`]: { $in: values } });
+        }
+      }
+
+      if (orConditions.length > 0) {
+        query = query.where({ $or: orConditions });
+      }
     }
 
     // Execute query and return results
@@ -135,27 +150,32 @@ app.get('/products-count', async (req, res) => {
   try {
     const { category, subcategory, filters } = req.query;
 
-    let query = Product.find();
+    let query = {};
 
     if (category) {
-      query = query.where('category').equals(category);
+      query.category = category;
     }
 
     if (subcategory) {
-      query = query.where('subcategory').equals(subcategory);
+      query.subcategory = subcategory;
     }
 
-    // Apply filters
     if (filters) {
       const filterConditions = JSON.parse(filters);
+      const orConditions = [];
+
       for (const [key, values] of Object.entries(filterConditions)) {
         if (values.length > 0) {
-          query = query.where(key).in(values);
+          orConditions.push({ [`info.${key}`]: { $in: values } });
         }
+      }
+
+      if (orConditions.length > 0) {
+        query = { ...query, $or: orConditions };
       }
     }
 
-    const count = await query.countDocuments();
+    const count = await Product.countDocuments(query);
     res.json({ count });
   } catch (err) {
     res.status(500).json({ message: err.message });

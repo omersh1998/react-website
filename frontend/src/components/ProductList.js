@@ -14,6 +14,7 @@ const ProductList = ({ addToCart }) => {
   const [error, setError] = useState(null);
   const [showSpinner, setShowSpinner] = useState(true);
   const [expandedFilter, setExpandedFilter] = useState(null);
+  const [productCount, setProductCount] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -24,15 +25,14 @@ const ProductList = ({ addToCart }) => {
         setLoading(true);
         spinnerTimeout = setTimeout(() => setShowSpinner(true), 300);
 
-        let query = '/all-products';
-        if (category) {
-          query += `?category=${category}`;
-          if (subcategory) {
-            query += `&subcategory=${subcategory}`;
-          }
-        }
+        // Build query with selected filters
+        const queryParams = {
+          category,
+          subcategory,
+          filters: JSON.stringify(selectedFilters),
+        };
 
-        const response = await axios.get(query, { params: { ...selectedFilters } });
+        const response = await axios.get('/all-products', { params: queryParams });
         if (isMounted) {
           setProducts(response.data);
           setError(null);
@@ -47,6 +47,21 @@ const ProductList = ({ addToCart }) => {
           setLoading(false);
           setTimeout(() => setShowSpinner(false), 300);
         }
+      }
+    };
+
+    const fetchProductCount = async () => {
+      try {
+        const response = await axios.get('/products-count', {
+          params: {
+            category,
+            subcategory,
+            filters: JSON.stringify(selectedFilters),
+          },
+        });
+        setProductCount(response.data.count);
+      } catch (err) {
+        console.error('Failed to fetch product count:', err);
       }
     };
 
@@ -75,6 +90,7 @@ const ProductList = ({ addToCart }) => {
     };
 
     fetchProducts();
+    fetchProductCount();
     if (category) {
       fetchCategoryFilters();
     }
@@ -115,7 +131,9 @@ const ProductList = ({ addToCart }) => {
   return (
     <div className="product-list-container">
       <div className="filters-sidebar">
-        <h3></h3>
+        <div className="filters-header">
+          <h3>{productCount} Products Found</h3>
+        </div>
         {filters.map((filterCategory) => (
           <div
             key={filterCategory.name}
