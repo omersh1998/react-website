@@ -24,9 +24,9 @@ db.once('open', () => {
 });
 
 // Routes
-app.get('/all-products', async (req, res) => {
+app.post('/all-products', async (req, res) => {
   try {
-    const { offset = 0, limit = 10, sortBy, category, subcategory, filters } = req.query;
+    const { offset = 0, limit = 10, sortBy, category, subcategory, filters } = req.body;
 
     console.log(req.url);
 
@@ -48,18 +48,34 @@ app.get('/all-products', async (req, res) => {
       query = query.sort(sortBy);
     }
 
+    console.log(offset);
+    console.log(limit);
+    console.log(sortBy);
+    console.log(category);
+    console.log(subcategory);
+    console.log(filters);
     if (filters) {
-      const filterConditions = JSON.parse(filters);
-      const orConditions = [];
+      console.log('1');
 
-      for (const [key, values] of Object.entries(filterConditions)) {
+      // Create an array for AND conditions
+      const andConditions = [];
+
+      for (const [key, values] of Object.entries(filters)) {
+        console.log('2');
         if (values.length > 0) {
-          orConditions.push({ [`info.${key}`]: { $in: values } });
+          console.log('3');
+          // OR condition for each filter category
+          andConditions.push({
+            [`info.${key}`]: { $in: values }
+          });
+          console.log('4');
         }
       }
 
-      if (orConditions.length > 0) {
-        query = query.where({ $or: orConditions });
+      console.log('5');
+
+      if (andConditions.length > 0) {
+        query = query.where({ $and: andConditions });
       }
     }
 
@@ -75,8 +91,6 @@ app.get('/all-products', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
-
 
 app.get('/product/:id', async (req, res) => {
   try {

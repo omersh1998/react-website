@@ -37,3 +37,26 @@ li:hover {
   box-shadow: 0px 10px 30px 0px rgba(82, 63, 105, 0.05);
   transition: all linear 0.3s;
 }
+
+/* App.css */
+.App {
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.filters-sidebar {
+  flex: 1; /* Sidebar takes up space based on content */
+  min-width: 250px; /* Adjust width as needed */
+}
+
+.products-main {
+  flex: 3; /* Products take up more space */
+  display: flex;
+}
+
+/* Other existing styles */

@@ -1,0 +1,83 @@
+/* Filters.css */
+
+.filters-sidebar {
+    background: #ffffff;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    height: 100vh; /* Ensure it takes the full height of the viewport */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+  }
+  
+  .filter-count {
+    margin-bottom: 20px;
+  }
+  
+  .filters {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .filter-category {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    margin: 0;
+    padding: 10px;
+  }
+  
+  .filter-category h4 {
+    border-bottom: 0px solid #bbb;
+  }
+  
+  .filter-category.expanded .filter-header {
+    background: #ffffff;
+  }
+  
+  .filter-body {
+    display: none;
+    padding: 10px;
+  }
+  
+  .filter-body.show {
+    display: block;
+  }
+  
+  .filter-option {
+    margin-bottom: 8px;
+  }
+  
+  .filter-option input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .filter-option label {
+    cursor: pointer;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid red;
+    border-radius: 4px;
+    background: #ffe6e6;
+  }
+
+  .filters-sidebar {
+    width: 300px; /* Adjust this width as needed */
+    min-width: 250px; /* Minimum width for smaller screens */
+    overflow-y: auto; /* Allow scrolling if the content overflows */
+    position: relative; /* Ensures it stays in place */
+  }
+  
+  .hide-filters {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .filters-sidebar {
+      display: none; /* Hide filters on smaller screens */
+    }
+  }
+  
+  

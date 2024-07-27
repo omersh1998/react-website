@@ -1,24 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import ProductList from './ProductList';
 import ProductDetail from './ProductDetail';
 import Navbar from './Navbar';
 import ShoppingCart from './ShoppingCart';
+import Filters from './Filters'; // Import the new Filters component
 import axios from '../axiosConfig'; // Import the configured Axios instance
 import '../styles/App.css';
+import '../styles/Filters.css'; // Import the Filters CSS
 
 const App = () => {
   const [products, setProducts] = useState([]);
+  const [filters, setFilters] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState({});
+  const [expandedFilters, setExpandedFilters] = useState({});
+  const [currentCategory, setCurrentCategory] = useState('');
+  const [showFilters, setShowFilters] = useState(true);
+
+  const location = useLocation();
 
   const fetchProducts = async (query = '') => {
     try {
       const url = query ? `/search?name=${encodeURIComponent(query)}` : '/all-products';
-      const response = await axios.get(url);
-      setProducts(response.data);
+      const response = query ? await axios.get(url) : await axios.post(url);
+      setProducts(response.data.products);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
   };
+
+  const fetchFilters = async (category) => {
+    try {
+      const response = await axios.get(`/filters?category=${category}`);
+      setFilters(response.data);
+    } catch (error) {
+      console.error('Error fetching filters:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      // Reset filters when navigating to home page
+      setSelectedFilters({});
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (currentCategory) {
+      fetchFilters(currentCategory);
+    }
+  }, [currentCategory]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowFilters(window.innerWidth > 768); // Adjust based on screen size
+    };
+
+    handleResize(); // Check initial size
+    window.addEventListener('resize', handleResize); // Add event listener for resizing
+
+    return () => window.removeEventListener('resize', handleResize); // Clean up listener
+  }, []);
 
   const initialCart = JSON.parse(localStorage.getItem('cart')) || [];
   const [cart, setCart] = useState(initialCart);
@@ -69,18 +111,63 @@ const App = () => {
     fetchProducts(searchTerm);
   };
 
+  const handleFilterChange = (filterName, value) => {
+    setSelectedFilters((prevFilters) => {
+      const newFilters = { ...prevFilters };
+  
+      // Initialize filter array if it doesn't exist
+      if (!newFilters[filterName]) {
+        newFilters[filterName] = [];
+      }
+  
+      // Add or remove the filter value
+      if (newFilters[filterName].includes(value)) {
+        newFilters[filterName] = newFilters[filterName].filter((v) => v !== value);
+      } else {
+        newFilters[filterName].push(value);
+      }
+  
+      // Remove the filterName key if its array is empty
+      if (newFilters[filterName].length === 0) {
+        delete newFilters[filterName];
+      }
+  
+      return newFilters;
+    });
+  };  
+
+  const toggleFilterCategory = (filterName) => {
+    setExpandedFilters((prev) => ({
+      ...prev,
+      [filterName]: !prev[filterName]
+    }));
+  };
+
   return (
     <div className="App">
       <Navbar cartItemCount={cartItemCount} onSearch={searchProducts} />
       <div className="container">
-        <Routes>
-          <Route exact path="/" element={<ProductList products={products} addToCart={addToCart} />} />
-          <Route path="/cart" element={<ShoppingCart cart={cart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
-          <Route path="/product/:productId" element={<ProductDetail />} />
-          <Route path="/search" element={<ProductList products={products} addToCart={addToCart} />} />
-          <Route path="/category/:category/:subcategory" element={<ProductList addToCart={addToCart} />} />
-          <Route path="/category/:category" element={<ProductList addToCart={addToCart} />} />
-        </Routes>
+        <div className={`filters-sidebar ${!showFilters ? 'hide-filters' : ''}`}>
+          {currentCategory && (
+            <Filters 
+              filters={filters}
+              selectedFilters={selectedFilters}
+              handleFilterChange={handleFilterChange}
+              toggleFilterCategory={toggleFilterCategory}
+              expandedFilters={expandedFilters}
+            />
+          )}
+        </div>
+        <div className="products-main">
+          <Routes>
+            <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} />} />
+            <Route path="/cart" element={<ShoppingCart cart={cart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
+            <Route path="/product/:productId" element={<ProductDetail />} />
+            <Route path="/search" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} />} />
+            <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} />
+            <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} />
+          </Routes>
+        </div>
       </div>
     </div>
   );
