@@ -17,6 +17,7 @@ const App = () => {
   const [currentCategory, setCurrentCategory] = useState('');
   const [showFilters, setShowFilters] = useState(true);
   const [isShowFilter, setIsShowFilter] = useState(false);
+  const [cartUpdated, setCartUpdated] = useState(false);
 
   const location = useLocation();
 
@@ -80,6 +81,8 @@ const App = () => {
   const updateCartStorageAndStore = (updatedCart) => {
     updateCartStorage(updatedCart);
     setCart(updatedCart);
+    setCartUpdated(true);
+    setTimeout(() => setCartUpdated(false), 2000); // Reset after 3 seconds
   };
 
   const cartItemCount = cart.reduce((total, item) => {
@@ -153,7 +156,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <Navbar cartItemCount={cartItemCount} onSearch={searchProducts} />
+      <Navbar cartItemCount={cartItemCount} onSearch={searchProducts} cartUpdated={cartUpdated} />
       <div className="container">
         {isShowFilter && <div className={`filters-sidebar ${!showFilters ? 'hide-filters' : ''}`}>
           {currentCategory && (
@@ -170,7 +173,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} />} />
             <Route path="/cart" element={<ShoppingCart cart={cart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
-            <Route path="/product/:productId" element={<ProductDetail />} />
+            <Route path="/product/:productId" element={<ProductDetail addToCart={addToCart} />} />
             <Route path="/search" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} />} />
             <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} />
             <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} />

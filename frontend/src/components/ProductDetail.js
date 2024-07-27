@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from '../axiosConfig'; // Ensure axios is configured correctly
 import '../styles/ProductDetail.css'; // Import your CSS file
 
-const ProductDetail = () => {
+const ProductDetail = ({ addToCart }) => {
   const { productId } = useParams(); // Get productId from URL parameters
   const [product, setProduct] = useState(null); // State to hold product data
   const [loading, setLoading] = useState(true); // State for loading
@@ -57,7 +57,7 @@ const ProductDetail = () => {
           </div>
           <p className="product-detail-description">{product.description}</p>
           <div className="add-to-cart-wrapper">
-            <button className="add-to-cart-button">Add to Cart</button>
+            <button onClick={() => addToCart(product)} className="add-to-cart-button">Add to Cart</button>
           </div>
         </div>
       </div>

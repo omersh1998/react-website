@@ -8,6 +8,8 @@ const ShoppingCart = ({ cart, onQuantityChange, onRemoveFromCart }) => {
   // Calculate total cost of items in the cart
   const totalCost = cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
+  console.log(cart);
+
   return (
     <div className="shopping-cart">
       <h2>Shopping Cart</h2>
@@ -18,7 +20,7 @@ const ShoppingCart = ({ cart, onQuantityChange, onRemoveFromCart }) => {
       <div className="cart-items">
         {cart.map(item => (
           <div key={item.product._id} className="cart-item">
-            <img src={item.product.image} alt={item.product.name} className="cart-item-image" />
+            <img src={item?.product?.images[0]} alt={item.product.name} className="cart-item-image" />
             <div className="cart-item-details">
               <p className="cart-item-name">{item.product.name}</p>
               <div className="cart-item-quantity">
@@ -27,7 +29,7 @@ const ShoppingCart = ({ cart, onQuantityChange, onRemoveFromCart }) => {
                   value={item.quantity}
                   onChange={(e) => onQuantityChange(item.product._id, parseInt(e.target.value))}
                 >
-                  {[...Array(10).keys()].map(num => (
+                  {[...Array(99).keys()].map(num => (
                     <option key={num + 1} value={num + 1}>{num + 1}</option>
                   ))}
                 </select>

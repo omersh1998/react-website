@@ -4,7 +4,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 import axios from '../axiosConfig';
 import '../styles/Navbar.css';
 
-const Navbar = ({ cartItemCount, onSearch }) => {
+const Navbar = ({ cartItemCount, onSearch, cartUpdated }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -140,9 +140,9 @@ const Navbar = ({ cartItemCount, onSearch }) => {
           </div>
         </div>
         <div className="navbar-right">
-          <Link to="/cart" className="navbar-cart">
+          <Link to="/cart" className={`navbar-cart ${cartUpdated ? 'cart-updated' : ''}`}>
             <FaShoppingCart className="cart-icon" />
-            <span className="cart-count">{cartItemCount}</span>
+            {cartItemCount > 0 && <span className="cart-count">{cartItemCount}</span>}
           </Link>
         </div>
       </div>
