@@ -1,53 +1,68 @@
+/* Product card styling */
 .product {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 20px;
-    background-color: white;
-    transition: transform 0.3s ease;
-  }
-  
-  .product:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .product-link {
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  .product-image {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-  }
-  
-  .product-details {
-    padding: 10px 0;
-    text-align: center;
-  }
-  
-  .product-name {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .product-price {
-    margin-bottom: 10px;
-  }
-  
-  .add-to-cart-button {
-    background-color: black;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .add-to-cart-button:hover {
-    background-color: #333;
-  }
-  
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  justify-content: space-between; /* Push button to the bottom */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: white;
+  transition: transform 0.3s ease;
+  box-sizing: border-box; /* Ensure padding and border are included in width/height */
+}
+
+/* Hover effect for product card */
+.product:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Product link styling */
+.product-link {
+  text-decoration: none;
+  color: inherit;
+  flex: 1; /* Allow link content to grow and fill available space */
+}
+
+/* Product image styling */
+.product-image {
+  width: 100%;
+  max-width: 100%; /* Ensure the image can expand to fill its container */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Cover the area while maintaining aspect ratio */
+}
+
+/* Product details section styling */
+.product-details {
+  padding: 10px 0;
+  text-align: center;
+  flex: 1; /* Allow details to grow and fill available space */
+}
+
+/* Product name styling */
+.product-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Product price styling */
+.product-price {
+  margin-bottom: 10px;
+}
+
+/* Add to Cart Button styling */
+.add-to-cart-button {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: center; /* Center button horizontally */
+}
+
+.add-to-cart-button:hover {
+  background-color: #333;
+}

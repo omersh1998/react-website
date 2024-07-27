@@ -1,25 +1,15 @@
-/* Container to handle layout */
-.product-list-container {
-  display: flex;
-  gap: 20px; /* Gap between filters and products */
-  padding: 20px; /* Space from edges */
-}
-
 /* Sidebar for filters */
 .filters-sidebar {
-  width: 250px; /* Adjust width as needed */
+  flex: none;
+  width: 250px; /* Fixed width for sidebar */
   border-right: 1px solid #ccc;
   padding-right: 20px;
-}
-
-/* Filter count */
-.filter-count {
-  margin-bottom: 20px;
+  box-sizing: border-box; /* Include padding in width */
 }
 
 /* Filter category header */
 .filter-category {
-  margin-bottom: 15px;
+  margin-bottom: 20px; /* Increased margin for better separation */
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   padding: 10px 0;
@@ -36,7 +26,7 @@
 
 .filter-category h4::after {
   content: '▼'; /* Downward arrow */
-  font-size: 14px;
+  font-size: 16px; /* Slightly larger arrow */
   margin-left: auto;
   transition: transform 0.3s ease;
 }
@@ -49,7 +39,8 @@
 /* Filter options */
 .filter-body {
   display: none; /* Hidden by default */
-  padding-left: 10px;
+  padding-left: 20px; /* Increased padding for better alignment */
+  margin-top: 10px;
 }
 
 .filter-category.expanded .filter-body {
@@ -57,21 +48,111 @@
 }
 
 .filter-option {
-  margin-bottom: 5px;
+  margin-bottom: 10px; /* Increased margin for better spacing */
 }
 
-/* Product list */
+/* Container for product list */
 .products-main {
-  flex: 1;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  padding: 20px; /* Space from edges */
+  padding: 20px;
+  box-sizing: border-box; /* Include padding in width */
 }
 
+/* Individual product styling */
 .product {
-  width: 100%; /* Adjust based on your product card width */
-  max-width: 300px; /* Adjust based on your design */
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  justify-content: space-between; /* Push button to the bottom */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px; /* Increased padding */
+  background-color: white;
+  transition: transform 0.3s ease;
+  box-sizing: border-box; /* Ensure padding and border are included in width/height */
+  width: 300px; /* Fixed width for consistency */
+  height: 400px; /* Increased height for better fit */
+}
+
+/* Hover effect for product card */
+.product:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Product link styling */
+.product-link {
+  text-decoration: none;
+  color: inherit;
+  flex: 1; /* Allow link content to grow and fill available space */
+}
+
+/* Product image styling */
+.product-image {
+  width: 100%;
+  height: 200px; /* Increased height for image */
+  object-fit: cover; /* Cover the area while maintaining aspect ratio */
+}
+
+/* Product details section styling */
+.product-details {
+  padding: 10px 0;
+  text-align: center;
+  flex: 1; /* Allow details to grow and fill available space */
+}
+
+/* Product name styling */
+.product-name {
+  font-weight: bold;
+  margin-bottom: 10px; /* Increased margin for better spacing */
+}
+
+/* Product price styling */
+.product-price {
+  margin-bottom: 15px; /* Increased margin for better spacing */
+}
+
+/* Add to Cart Button styling */
+.add-to-cart-button {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 15px; /* Increased padding for button */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: center; /* Center button horizontally */
+}
+
+.add-to-cart-button:hover {
+  background-color: #333;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #8a8181;
+  font-weight: bold;
+}
+
+.pagination button.disabled {
+  background-color: #000000;
+  color: #fff; /* Ensure text is visible */
+  font-weight: bold;
 }
 
 /* Loading and error messages */
@@ -91,4 +172,38 @@
 .no-results {
   text-align: center;
   margin-top: 20px;
+}
+
+/* Main wrapper for centering content */
+.main-wrapper {
+  max-width: 1200px; /* Set maximum width for content */
+  margin: 0 auto; /* Center horizontally */
+  padding: 0 20px; /* Add padding on the left and right */
+}
+
+/* Product List Container */
+.product-list-container {
+  display: flex;
+  gap: 20px; /* Space between filters and products */
+  padding: 20px; /* Space from edges */
+  max-width: 1200px; /* Max width for centering content */
+  margin: 0 auto; /* Center container horizontally */
+  box-sizing: border-box; /* Include padding and border in the width */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .main-wrapper {
+    padding: 0 10px; /* Reduce padding on smaller screens */
+  }
+
+  .filters-sidebar {
+    width: 100%; /* Full width on smaller screens */
+    border-right: none; /* Remove border on smaller screens */
+    padding-right: 0; /* Remove padding on smaller screens */
+  }
+  
+  .products-main {
+    padding: 10px; /* Adjust padding on smaller screens */
+  }
 }

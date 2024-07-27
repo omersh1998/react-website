@@ -26,7 +26,7 @@ db.once('open', () => {
 // Routes
 app.get('/all-products', async (req, res) => {
   try {
-    const { offset, limit, sortBy, category, subcategory, filters } = req.query;
+    const { offset = 0, limit = 10, sortBy, category, subcategory, filters } = req.query;
 
     console.log(req.url);
 
@@ -41,16 +41,6 @@ app.get('/all-products', async (req, res) => {
     // Apply subcategory filter if present, with case-insensitivity
     if (subcategory) {
       query = query.where('subcategory').regex(new RegExp(`^${subcategory}$`, 'i'));
-    }
-
-    // Apply offset if present
-    if (offset) {
-      query = query.skip(parseInt(offset));
-    }
-
-    // Apply limit if present
-    if (limit) {
-      query = query.limit(parseInt(limit));
     }
 
     // Apply sorting if present
@@ -73,9 +63,14 @@ app.get('/all-products', async (req, res) => {
       }
     }
 
+    const products = await query.skip(parseInt(offset)).limit(parseInt(limit)).exec();
+    const totalProducts = await Product.countDocuments(query.getQuery());
+
     // Execute query and return results
-    const products = await query.exec();
-    res.json(products);
+    res.json({
+      products,
+      totalProducts
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

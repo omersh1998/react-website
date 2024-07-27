@@ -7,14 +7,12 @@ const Product = ({ product, addToCart }) => {
     <div className="product">
       <Link to={`/product/${product._id}`} className="product-link">
         <img src={product.image} alt={product.name} className="product-image" />
-        <div className="product-details">
+        <div className="product-info">
           <p className="product-name">{product.name}</p>
           <p className="product-price">${product.price.toFixed(2)}</p>
         </div>
       </Link>
-      <div className="product-details">
-        <button onClick={() => addToCart(product)} className="add-to-cart-button">Add to Cart</button>
-      </div>
+      <button onClick={() => addToCart(product)} className="add-to-cart-button">Add to Cart</button>
     </div>
   );
 };
