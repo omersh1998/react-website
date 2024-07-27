@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const Product = require('./models/Product');
+const Category = require('./models/Category');
 
 const app = express();
 const port = 5000;
@@ -91,6 +92,17 @@ app.get('/search', async (req, res) => {
     const products = await Product.find({ name: { $regex: new RegExp(name, 'i') } }).exec();
     
     res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Define the route for fetching all categories
+app.get('/all-categories', async (req, res) => {
+  try {
+    // Fetch all categories from the database
+    const categories = await Category.find();
+    res.json(categories);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

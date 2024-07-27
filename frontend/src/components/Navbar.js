@@ -8,15 +8,9 @@ const Navbar = ({ cartItemCount, onSearch }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [categories, setCategories] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
-
-  const categories = [
-    { id: 1, name: 'Clothing', subcategories: ['Men', 'Women', 'Kids'] },
-    { id: 2, name: 'Electronics', subcategories: ['Phones', 'Laptops', 'Accessories'] },
-    { id: 3, name: 'Books', subcategories: ['Fiction', 'Non-fiction'] },
-    // Add more categories and subcategories as needed
-  ];
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -40,6 +34,26 @@ const Navbar = ({ cartItemCount, onSearch }) => {
 
     return () => clearTimeout(delayDebounceFn); // Cleanup on unmount or query change
   }, [query]);
+
+  useEffect(() => {
+    // Fetch categories from the server
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('/all-categories');
+        const mappedCategories = response.data.map((item) => {
+          item.id = item._id;
+          delete item._id;
+          return item;
+        });
+        setCategories(mappedCategories);
+        console.log(mappedCategories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     // Reset search query and suggestions on location change
