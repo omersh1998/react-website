@@ -124,12 +124,39 @@ app.get('/filters', async (req, res) => {
       return res.status(404).json({ message: 'Category not found' });
     }
 
-    console.log(categoryData);
-    console.log(categoryData.filters);
-    console.log(JSON.stringify(categoryData));
-
     // Return only the filters for the specified category
     res.json(categoryData.filters || []);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get('/products-count', async (req, res) => {
+  try {
+    const { category, subcategory, filters } = req.query;
+
+    let query = Product.find();
+
+    if (category) {
+      query = query.where('category').equals(category);
+    }
+
+    if (subcategory) {
+      query = query.where('subcategory').equals(subcategory);
+    }
+
+    // Apply filters
+    if (filters) {
+      const filterConditions = JSON.parse(filters);
+      for (const [key, values] of Object.entries(filterConditions)) {
+        if (values.length > 0) {
+          query = query.where(key).in(values);
+        }
+      }
+    }
+
+    const count = await query.countDocuments();
+    res.json({ count });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

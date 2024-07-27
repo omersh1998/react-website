@@ -8,63 +8,81 @@ import '../styles/ProductList.css'; // For your styles
 const ProductList = ({ addToCart }) => {
   const { category, subcategory } = useParams();
   const [products, setProducts] = useState([]);
-  const [filters, setFilters] = useState([]); // Initialize as empty array
+  const [filters, setFilters] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showSpinner, setShowSpinner] = useState(true);
+  const [expandedFilter, setExpandedFilter] = useState(null);
 
-  // Fetch filters when category changes
   useEffect(() => {
-    const fetchFilters = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`/filters?category=${category}`);
-        setFilters(response.data || []); // Ensure filters is always an array
-        console.log(response.data);
-      } catch (err) {
-        setError('Failed to fetch filters');
-      } finally {
-        setLoading(false);
-        setShowSpinner(false);
-      }
-    };
+    let isMounted = true;
+    let spinnerTimeout;
 
-    if (category) {
-      fetchFilters();
-    }
-  }, [category]);
-
-  // Fetch products when category, subcategory, or selected filters change
-  useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
+        spinnerTimeout = setTimeout(() => setShowSpinner(true), 300);
+
         let query = '/all-products';
         if (category) {
           query += `?category=${category}`;
-        }
-        if (subcategory) {
-          query += `&subcategory=${subcategory}`;
-        }
-        Object.keys(selectedFilters).forEach((key) => {
-          const values = selectedFilters[key];
-          if (values.length > 0) {
-            query += `&${key}=${values.join(',')}`;
+          if (subcategory) {
+            query += `&subcategory=${subcategory}`;
           }
-        });
+        }
 
-        const response = await axios.get(query);
-        setProducts(response.data || []); // Ensure products is always an array
+        const response = await axios.get(query, { params: { ...selectedFilters } });
+        if (isMounted) {
+          setProducts(response.data);
+          setError(null);
+        }
       } catch (err) {
-        setError('Failed to fetch products');
+        if (isMounted) {
+          setError('Failed to fetch products');
+        }
       } finally {
-        setLoading(false);
-        setShowSpinner(false);
+        if (isMounted) {
+          clearTimeout(spinnerTimeout);
+          setLoading(false);
+          setTimeout(() => setShowSpinner(false), 300);
+        }
+      }
+    };
+
+    const fetchCategoryFilters = async () => {
+      try {
+        setLoading(true);
+        spinnerTimeout = setTimeout(() => setShowSpinner(true), 300);
+
+        const query = `/filters?category=${category}`;
+        const response = await axios.get(query);
+        if (isMounted) {
+          setFilters(response.data);
+          setError(null);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError('Failed to fetch filters');
+        }
+      } finally {
+        if (isMounted) {
+          clearTimeout(spinnerTimeout);
+          setLoading(false);
+          setTimeout(() => setShowSpinner(false), 300);
+        }
       }
     };
 
     fetchProducts();
+    if (category) {
+      fetchCategoryFilters();
+    }
+
+    return () => {
+      isMounted = false;
+      clearTimeout(spinnerTimeout);
+    };
   }, [category, subcategory, selectedFilters]);
 
   const handleFilterChange = (filterName, value) => {
@@ -82,6 +100,10 @@ const ProductList = ({ addToCart }) => {
     });
   };
 
+  const handleCategoryClick = (filterName) => {
+    setExpandedFilter((prev) => (prev === filterName ? null : filterName));
+  };
+
   if (loading || showSpinner) {
     return <LoadingSpinner />;
   }
@@ -93,11 +115,18 @@ const ProductList = ({ addToCart }) => {
   return (
     <div className="product-list-container">
       <div className="filters-sidebar">
-        <h3>Filters</h3>
-        {filters.length > 0 ? (
-          filters.map((filterCategory) => (
-            <div key={filterCategory.name} className="filter-category">
-              <h4>{filterCategory.name}</h4>
+        <h3></h3>
+        {filters.map((filterCategory) => (
+          <div
+            key={filterCategory.name}
+            className={`filter-category ${expandedFilter === filterCategory.name ? 'expanded' : ''}`}
+          >
+            <h4 onClick={() => handleCategoryClick(filterCategory.name)}>
+              {filterCategory.name}
+            </h4>
+            <div
+              className={`filter-options ${expandedFilter === filterCategory.name ? 'show' : ''}`}
+            >
               {filterCategory.filters.map((filter) => (
                 <div key={filter} className="filter-option">
                   <input
@@ -110,10 +139,8 @@ const ProductList = ({ addToCart }) => {
                 </div>
               ))}
             </div>
-          ))
-        ) : (
-          <div>No filters available</div>
-        )}
+          </div>
+        ))}
       </div>
       <div className="products-main">
         {products.length === 0 ? (
