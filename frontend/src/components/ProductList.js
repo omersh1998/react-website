@@ -12,7 +12,7 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchPro
   const [error, setError] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(10);
+  const [productsPerPage] = useState(12);
 
   useEffect(() => {
     if (category) {
