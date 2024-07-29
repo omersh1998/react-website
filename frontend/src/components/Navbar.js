@@ -39,7 +39,7 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated }) => {
     // Fetch categories from the server
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('/all-categories');
+        const response = await axios.get('/categories');
         const mappedCategories = response.data.map((item) => {
           item.id = item._id;
           delete item._id;

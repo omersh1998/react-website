@@ -5,7 +5,7 @@ import '../styles/Product.css'; // Import CSS for Product styles
 const Product = ({ product, addToCart }) => {
   return (
     <div className="product">
-      <Link to={`/product/${product._id}`} className="product-link">
+      <Link to={`/products/${product._id}`} className="product-link">
         <img src={product.images[0]} alt={product.name} className="product-image" />
         <div className="product-info">
           <p className="product-name">{product.name}</p>

@@ -3,22 +3,16 @@ import { useParams } from 'react-router-dom';
 import axios from '../axiosConfig'; // Import the configured Axios instance
 import Product from './Product'; // Adjust the path as needed
 import LoadingSpinner from './LoadingSpinner';
-import Filters from './Filters'; // Import Filters component
-import qs from 'qs';
 import '../styles/ProductList.css'; // For your styles
 
-const ProductList = ({ addToCart, setCurrentCategory, selectedFilters }) => {
+const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchProducts }) => {
   const { category, subcategory } = useParams();
   const [products, setProducts] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [filters, setFilters] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10);
-  const [expandedFilters, setExpandedFilters] = useState({});
-  const [productCounts, setProductCounts] = useState({}); // Added state for product counts
 
   useEffect(() => {
     if (category) {
@@ -36,9 +30,7 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters }) => {
 
         spinnerTimeout = setTimeout(() => setShowSpinner(true), 1000);
 
-        console.log(selectedFilters);
-
-        const response = await axios.post('/all-products', {
+        const response = await axios.post('/products', {
           category,
           subcategory,
           offset: (currentPage - 1) * productsPerPage,
@@ -49,7 +41,6 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters }) => {
         if (isMounted) {
           setProducts(response.data.products);
           setTotalProducts(response.data.totalProducts);
-          setProductCounts(response.data.productCounts); // Set product counts for filters
           setError(null);
         }
       } catch (err) {
@@ -60,45 +51,29 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters }) => {
       } finally {
         if (isMounted) {
           clearTimeout(spinnerTimeout);
-          setLoading(false);
           setTimeout(() => setShowSpinner(false), 1000);
         }
       }
     };
 
-    const fetchCategoryFilters = async () => {
-      if (category) {
-        try {
-          const query = `/filters?category=${category}`;
-          const response = await axios.get(query);
-          if (isMounted) {
-            setFilters(response.data);
-            setError(null);
-          }
-        } catch (err) {
-          if (isMounted) {
-            setError('Failed to fetch filters');
-          }
-        }
-      }
-    };
-
     fetchProducts();
-    fetchCategoryFilters();
 
     return () => {
       isMounted = false;
       clearTimeout(spinnerTimeout);
     };
-  }, [category, subcategory, currentPage, selectedFilters]);
+  }, [category, subcategory, currentPage, selectedFilters, productsPerPage, searchProducts]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    setLoading(true);
   };
 
   if (showSpinner) {
-    return <LoadingSpinner />;
+    return (
+      <div className="main-wrapper">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {
@@ -114,14 +89,14 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters }) => {
               <h2>No products found</h2>
             </div>
           ) : (
-            products.map((product) => (
+            (searchProducts && searchProducts.length ? searchProducts : products).map((product) => (
               <Product key={product._id} product={product} addToCart={addToCart} />
             ))
           )}
         </div>
       </div>
       <div className="pagination">
-        {[...Array(Math.ceil(totalProducts / productsPerPage)).keys()].map((page) => (
+        {[...Array(Math.ceil((searchProducts && searchProducts.length ? searchProducts.length : totalProducts) / productsPerPage)).keys()].map((page) => (
           <button
             key={page}
             onClick={() => handlePageChange(page + 1)}

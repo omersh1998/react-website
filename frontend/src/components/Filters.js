@@ -1,10 +1,8 @@
 import React from 'react';
 import '../styles/Filters.css'; // Import the Filters CSS
 
-const Filters = ({ filters, selectedFilters, handleFilterChange, toggleFilterCategory, expandedFilters, productCounts }) => {
-  // Default to empty objects if filters or productCounts are undefined
+const Filters = ({ filters, selectedFilters, handleFilterChange, toggleFilterCategory, expandedFilters }) => {
   const safeFilters = filters || [];
-  const safeProductCounts = productCounts || {};
 
   return (
     <div className="filters">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import ProductList from './ProductList';
 import ProductDetail from './ProductDetail';
 import Navbar from './Navbar';
@@ -23,9 +23,10 @@ const App = () => {
 
   const fetchProducts = async (query = '') => {
     try {
-      const url = query ? `/search?name=${encodeURIComponent(query)}` : '/all-products';
+      const url = query ? `/search?name=${encodeURIComponent(query)}` : '/products';
       const response = query ? await axios.get(url) : await axios.post(url);
-      setProducts(response.data.products);
+      console.log(response.data);
+      setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -33,7 +34,7 @@ const App = () => {
 
   const fetchFilters = async (category) => {
     try {
-      const response = await axios.get(`/filters?category=${category}`);
+      const response = await axios.get(`/categories/filters?category=${category}`);
       setFilters(response.data);
     } catch (error) {
       console.error('Error fetching filters:', error);
@@ -173,8 +174,8 @@ const App = () => {
           <Routes>
             <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} />} />
             <Route path="/cart" element={<ShoppingCart cart={cart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
-            <Route path="/product/:productId" element={<ProductDetail addToCart={addToCart} />} />
-            <Route path="/search" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} />} />
+            <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} />} />
+            <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} />} />
             <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} />
             <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} />
           </Routes>

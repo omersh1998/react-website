@@ -1,12 +1,17 @@
+// Dependencies
 const express = require('express');
+const logger = require("morgan");
 const mongoose = require('mongoose');
 const cors = require('cors');
 const Product = require('./models/Product');
 const Category = require('./models/Category');
 
+// Express app
 const app = express();
 const port = 5000;
 
+// App middleware
+app.use(logger("dev"));
 app.use(cors());
 app.use(express.json());
 
@@ -24,85 +29,12 @@ db.once('open', () => {
 });
 
 // Routes
-app.post('/all-products', async (req, res) => {
-  try {
-    const { offset = 0, limit = 10, sortBy, category, subcategory, filters } = req.body;
+const productsRouter = require("./routes/products");
+const categoriesRouter = require("./routes/categories");
 
-    console.log(req.url);
-
-    // Initialize query for all products
-    let query = Product.find();
-
-    // Apply category filter if present
-    if (category) {
-      query = query.where('category').regex(new RegExp(`^${category}$`, 'i'));
-    }
-
-    // Apply subcategory filter if present, with case-insensitivity
-    if (subcategory) {
-      query = query.where('subcategory').regex(new RegExp(`^${subcategory}$`, 'i'));
-    }
-
-    // Apply sorting if present
-    if (sortBy) {
-      query = query.sort(sortBy);
-    }
-
-    console.log(offset);
-    console.log(limit);
-    console.log(sortBy);
-    console.log(category);
-    console.log(subcategory);
-    console.log(filters);
-    if (filters) {
-      console.log('1');
-
-      // Create an array for AND conditions
-      const andConditions = [];
-
-      for (const [key, values] of Object.entries(filters)) {
-        console.log('2');
-        if (values.length > 0) {
-          console.log('3');
-          // OR condition for each filter category
-          andConditions.push({
-            [`info.${key}`]: { $in: values }
-          });
-          console.log('4');
-        }
-      }
-
-      console.log('5');
-
-      if (andConditions.length > 0) {
-        query = query.where({ $and: andConditions });
-      }
-    }
-
-    const products = await query.skip(parseInt(offset)).limit(parseInt(limit)).exec();
-    const totalProducts = await Product.countDocuments(query.getQuery());
-
-    // Execute query and return results
-    res.json({
-      products,
-      totalProducts
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-app.get('/product/:id', async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-    res.json(product);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// App Routes
+app.use('/products', productsRouter);
+app.use('/categories', categoriesRouter);
 
 app.get('/search', async (req, res) => {
   try {
@@ -113,79 +45,12 @@ app.get('/search', async (req, res) => {
     }
 
     // Use a case-insensitive regex search to find products with names containing the query
-    const products = await Product.find({ name: { $regex: new RegExp(name, 'i') } }).exec();
+    const textToSearch = name ? name.toString() : "";
+    const regexPattern = new RegExp(`.*${textToSearch}.*`, "i");
+
+    const products = await Product.find({ name: { $regex: regexPattern } }).exec();
     
     res.json(products);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Define the route for fetching all categories
-app.get('/all-categories', async (req, res) => {
-  try {
-    // Fetch all categories from the database
-    const categories = await Category.find();
-    res.json(categories);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Get the filters for the categories
-app.get('/filters', async (req, res) => {
-  const { category } = req.query;
-
-  if (!category) {
-    return res.status(400).json({ message: 'Category parameter is required' });
-  }
-
-  try {
-    // Use a case-insensitive regex to find the category
-    const categoryData = await Category.findOne({ name: new RegExp('^' + category + '$', 'i') }).exec();
-
-    if (!categoryData) {
-      return res.status(404).json({ message: 'Category not found' });
-    }
-
-    // Return only the filters for the specified category
-    res.json(categoryData.filters || []);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-app.get('/products-count', async (req, res) => {
-  try {
-    const { category, subcategory, filters } = req.query;
-
-    let query = {};
-
-    if (category) {
-      query.category = category;
-    }
-
-    if (subcategory) {
-      query.subcategory = subcategory;
-    }
-
-    if (filters) {
-      const filterConditions = JSON.parse(filters);
-      const orConditions = [];
-
-      for (const [key, values] of Object.entries(filterConditions)) {
-        if (values.length > 0) {
-          orConditions.push({ [`info.${key}`]: { $in: values } });
-        }
-      }
-
-      if (orConditions.length > 0) {
-        query = { ...query, $or: orConditions };
-      }
-    }
-
-    const count = await Product.countDocuments(query);
-    res.json({ count });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

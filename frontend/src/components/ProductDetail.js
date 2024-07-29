@@ -13,7 +13,7 @@ const ProductDetail = ({ addToCart }) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`/product/${productId}`); // Fetch product data from server
+        const response = await axios.get(`/products/${productId}`); // Fetch product data from server
         setProduct(response.data); // Set product data
         setSelectedImage(response.data.images[0]); // Set default selected image
       } catch (err) {
