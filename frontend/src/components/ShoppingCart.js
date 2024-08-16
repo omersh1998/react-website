@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Payout, Confirmation } from '../modals/Payout';
 import '../styles/ShoppingCart.css';
 
-const ShoppingCart = ({ cart, onQuantityChange, onRemoveFromCart }) => {
-  // Calculate total number of items in the cart
-  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+const ShoppingCart = ({ cart, clearCart, onQuantityChange, onRemoveFromCart }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [boughtItems, setBoughtItemsn] = useState([]);
 
-  // Calculate total cost of items in the cart
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
   const totalCost = cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
-  console.log(cart);
+  const handleCheckout = () => {
+    setShowModal(true);
+  };
+
+  const handleConfirmPayment = () => {
+    setBoughtItemsn(cart.slice());
+    console.log(boughtItems);
+    clearCart();
+    setShowConfirmation(true);
+  };
 
   return (
     <div className="shopping-cart">
@@ -40,7 +51,23 @@ const ShoppingCart = ({ cart, onQuantityChange, onRemoveFromCart }) => {
           </div>
         ))}
       </div>
-      <button className="checkout-button">Checkout</button>
+      <button className="checkout-button" onClick={handleCheckout}>Checkout</button>
+      
+      {showModal && 
+        <Payout 
+          onClose={() => setShowModal(false)} 
+          onConfirm={handleConfirmPayment} 
+          cart={cart} 
+          totalCost={totalCost}
+        />
+      }
+
+      {showConfirmation && 
+        <Confirmation 
+          cart={boughtItems}
+          onClose={() => setShowConfirmation(false)} 
+        />
+      }
     </div>
   );
 };

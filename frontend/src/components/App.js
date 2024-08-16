@@ -42,10 +42,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (location.pathname === '/') {
-      // Reset filters when navigating to home page
-      setSelectedFilters({});
-    }
+    setSelectedFilters({});
 
     if (['/cart', '/product'].includes(location.pathname) || location.pathname.startsWith('/product')) {
       // Reset filters when navigating to home page
@@ -79,12 +76,17 @@ const App = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const updateCartStorageAndStore = (updatedCart) => {
+  const updateCartStorageAndStore = (updatedCart, timeout = 2000) => {
     updateCartStorage(updatedCart);
     setCart(updatedCart);
     setCartUpdated(true);
-    setTimeout(() => setCartUpdated(false), 2000); // Reset after 3 seconds
+    setTimeout(() => setCartUpdated(false), timeout); // Reset after x seconds
   };
+
+  const clearCart = () => {
+    console.log('YOOOOOO');
+    updateCartStorageAndStore([], 100);
+  }
 
   const cartItemCount = cart.reduce((total, item) => {
     total += item.quantity;
@@ -173,7 +175,7 @@ const App = () => {
         <div className={isShowFilter ? "products-main" : "products-main flex-column"}>
           <Routes>
             <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} />} />
-            <Route path="/cart" element={<ShoppingCart cart={cart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
+            <Route path="/cart" element={<ShoppingCart cart={cart} clearCart={clearCart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
             <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} />} />
             <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} />} />
             <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} />
