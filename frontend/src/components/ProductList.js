@@ -5,7 +5,7 @@ import Product from './Product'; // Adjust the path as needed
 import LoadingSpinner from './LoadingSpinner';
 import '../styles/ProductList.css'; // For your styles
 
-const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchProducts }) => {
+const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchProducts, sortOption, setSortOption }) => {
   const { category, subcategory } = useParams();
   const [products, setProducts] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
@@ -16,7 +16,7 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchPro
 
   useEffect(() => {
     if (category) {
-      setCurrentCategory(category); // Set the current category for the App component
+      setCurrentCategory(category);
     }
   }, [category, setCurrentCategory]);
 
@@ -27,7 +27,6 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchPro
     const fetchProducts = async () => {
       try {
         setShowSpinner(true);
-
         spinnerTimeout = setTimeout(() => setShowSpinner(true), 1000);
 
         const response = await axios.post('/products', {
@@ -35,7 +34,8 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchPro
           subcategory,
           offset: (currentPage - 1) * productsPerPage,
           limit: productsPerPage,
-          filters: selectedFilters // Include filters in request
+          filters: selectedFilters,
+          sort: sortOption
         });
 
         if (isMounted) {
@@ -62,7 +62,11 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchPro
       isMounted = false;
       clearTimeout(spinnerTimeout);
     };
-  }, [category, subcategory, currentPage, selectedFilters, productsPerPage, searchProducts]);
+  }, [category, subcategory, currentPage, selectedFilters, productsPerPage, searchProducts, sortOption]);
+
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value); // Update sorting option
+  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -82,6 +86,28 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchPro
 
   return (
     <div className="main-wrapper">
+      <div className="products-header">
+        <div className="product-count">
+          {totalProducts} products found
+        </div>
+
+        <h1 className="category-info">
+          {category} {subcategory && ` / ${subcategory}`}
+        </h1>
+
+        <div className="sorting-dropdown">
+          <div>
+            Sort
+          </div>
+          <select value={sortOption} onChange={handleSortChange}>
+            <option value="priceAsc">Price: Low to High</option>
+            <option value="priceDesc">Price: High to Low</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
+      </div>
+
+
       <div className="product-list-container">
         <div className="products-main">
           {products.length === 0 ? (
@@ -95,6 +121,7 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchPro
           )}
         </div>
       </div>
+
       <div className="pagination">
         {[...Array(Math.ceil((searchProducts && searchProducts.length ? searchProducts.length : totalProducts) / productsPerPage)).keys()].map((page) => (
           <button

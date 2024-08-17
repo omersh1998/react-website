@@ -5,25 +5,35 @@ const Product = require("../models/Product");
 // Get products
 router.post('/', async (req, res) => {
   try {
-    const { offset = 0, limit = 10, sortBy, category, subcategory, filters } = req.body;
+    const { offset = 0, limit = 10, sort = 'priceAsc', category, subcategory, filters } = req.body;
+    let sortOrder = { 'price': 1 };
 
-    // Initialize query for all products
+    // ----- Start to create query ----- //
+
     let query = Product.find();
 
-    // Apply category filter if present
     if (category) {
       query = query.where('category').regex(new RegExp(`^${category}$`, 'i'));
     }
 
-    // Apply subcategory filter if present, with case-insensitivity
     if (subcategory) {
       query = query.where('subcategory').regex(new RegExp(`^${subcategory}$`, 'i'));
     }
 
-    // Apply sorting if present
-    if (sortBy) {
-      query = query.sort(sortBy);
+    if (sort) {
+      if (sort == 'priceDesc') {
+        sortOrder = { 'price': -1 };
+      }
+
+      if (sort == 'rating') {
+        sortOrder = { 'rating.rate': -1 };
+      }
     }
+
+    console.log(sortOrder);
+    console.log('sortOrder');
+
+    query = query.sort(sortOrder);
 
     if (filters) {
       // Create an array for AND conditions
@@ -42,6 +52,8 @@ router.post('/', async (req, res) => {
         query = query.where({ $and: andConditions });
       }
     }
+
+    // ----- End creating query ----- //
 
     const products = await query.skip(parseInt(offset)).limit(parseInt(limit)).exec();
     const totalProducts = await Product.countDocuments(query.getQuery());

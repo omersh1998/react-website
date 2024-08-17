@@ -18,6 +18,7 @@ const App = () => {
   const [showFilters, setShowFilters] = useState(true);
   const [isShowFilter, setIsShowFilter] = useState(false);
   const [cartUpdated, setCartUpdated] = useState(false);
+  const [sortOption, setSortOption] = useState(undefined);
 
   const location = useLocation();
 
@@ -43,6 +44,7 @@ const App = () => {
 
   useEffect(() => {
     setSelectedFilters({});
+    setSortOption(undefined);
 
     if (['/cart', '/product'].includes(location.pathname) || location.pathname.startsWith('/product')) {
       // Reset filters when navigating to home page
@@ -84,7 +86,6 @@ const App = () => {
   };
 
   const clearCart = () => {
-    console.log('YOOOOOO');
     updateCartStorageAndStore([], 100);
   }
 
@@ -174,12 +175,12 @@ const App = () => {
         </div>}
         <div className={isShowFilter ? "products-main" : "products-main flex-column"}>
           <Routes>
-            <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} />} />
+            <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} />} />
             <Route path="/cart" element={<ShoppingCart cart={cart} clearCart={clearCart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
             <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} />} />
-            <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} />} />
-            <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} />
-            <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} />
+            <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} />} />
+            <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} />} sortOption={sortOption} setSortOption={setSortOption} />
+            <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} />} />
           </Routes>
         </div>
       </div>
