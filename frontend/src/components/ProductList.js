@@ -86,26 +86,28 @@ const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchPro
 
   return (
     <div className="main-wrapper">
-      <div className="products-header">
-        <div className="product-count">
-          {totalProducts} products found
-        </div>
-
-        <h1 className="category-info">
-          {category} {subcategory && ` / ${subcategory}`}
-        </h1>
-
-        <div className="sorting-dropdown">
-          <div>
-            Sort
+      {totalProducts > 0 && (
+        <div className="products-header">
+          <div className="product-count">
+            {totalProducts} products found
           </div>
-          <select value={sortOption} onChange={handleSortChange}>
-            <option value="priceAsc">Price: Low to High</option>
-            <option value="priceDesc">Price: High to Low</option>
-            <option value="rating">Rating</option>
-          </select>
+
+          <h1 className="category-info">
+            {category} {subcategory && ` / ${subcategory}`}
+          </h1>
+
+          <div className="sorting-dropdown">
+            <div>
+              Sort
+            </div>
+            <select value={sortOption} onChange={handleSortChange}>
+              <option value="priceAsc">Price: Low to High</option>
+              <option value="priceDesc">Price: High to Low</option>
+              <option value="rating">Rating</option>
+            </select>
+          </div>
         </div>
-      </div>
+      )}
 
 
       <div className="product-list-container">

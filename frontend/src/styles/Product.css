@@ -9,7 +9,9 @@
   margin-bottom: 20px;
   background-color: white;
   transition: transform 0.3s ease;
-  box-sizing: border-box; /* Ensure padding and border are included in width/height */
+  box-sizing: border-box;
+  overflow: hidden; /* Prevent content from overflowing */
+  height: 100%; /* Ensures product box takes full available height */
 }
 
 /* Hover effect for product card */
@@ -35,20 +37,47 @@
 
 /* Product details section styling */
 .product-details {
-  padding: 10px 0;
+  flex-grow: 1;
   text-align: center;
-  flex: 1; /* Allow details to grow and fill available space */
 }
 
 /* Product name styling */
 .product-name {
   font-weight: bold;
   margin-bottom: 5px;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflowed text */
+  text-overflow: ellipsis; /* Add ellipsis to the overflowed text */
+  position: relative; /* Position for tooltip */
+  cursor: pointer; /* Indicate that it's interactive */
 }
 
 /* Product price styling */
 .product-price {
+  margin-bottom: 5px; /* Adjusted for rating stars to fit */
+}
+
+/* Rating stars styling */
+.product-rating {
+  display: flex;
+  justify-content: center;
   margin-bottom: 10px;
+}
+
+/* Base star style */
+.star {
+  font-size: 18px; /* Adjust the size of stars */
+  margin: 0 2px;
+}
+
+/* Filled (black) stars */
+.star.filled {
+  color: #000; /* Black for filled stars */
+}
+
+/* Greyed-out stars */
+.star.grey {
+  color: #ddd; /* Grey for unfilled stars */
 }
 
 /* Add to Cart Button styling */
@@ -61,8 +90,58 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   align-self: center; /* Center button horizontally */
+  margin-top: auto; /* Ensure the button sticks to the bottom of the card */
 }
 
 .add-to-cart-button:hover {
   background-color: #333;
+}
+
+/* Tooltip to show full name on hover */
+.product-name:hover::after {
+  content: attr(data-full-name); /* Get the full name from data attribute */
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75); /* Dark background for tooltip */
+  color: white;
+  padding: 5px;
+  border-radius: 3px;
+  top: 100%; /* Position the tooltip below the name */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: normal; /* Allow wrapping inside the tooltip */
+  max-width: 200px; /* Limit the width of the tooltip */
+  z-index: 1000; /* Make sure it shows above other elements */
+  text-align: center; /* Center the text inside the tooltip */
+  opacity: 0; /* Hidden initially */
+  visibility: hidden; /* Hidden initially */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Show tooltip on hover */
+.product-name:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.product-name-tooltip {
+  visibility: hidden; /* Initially hidden */
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.75); /* Dark background for tooltip */
+  color: white;
+  text-align: center;
+  padding: 5px;
+  border-radius: 3px;
+  position: absolute;
+  top: 100%; /* Below the product name */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 1000;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  max-width: 200px;
+}
+
+.product-name:hover .product-name-tooltip {
+  visibility: visible;
+  opacity: 1;
 }
