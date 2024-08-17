@@ -70,6 +70,7 @@
 
 .product-detail-price {
   font-size: 24px;
+  padding-left: 10px;
   font-weight: bold;
   color: #333;
 }
