@@ -1,0 +1,17 @@
+/* Footer.css */
+
+.footer {
+  background-color: #000; /* Black background */
+  color: #fff; /* White text */
+  padding: 20px;
+  text-align: center;
+}
+
+.footer-content p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.footer-content p:first-child {
+  font-weight: bold;
+}

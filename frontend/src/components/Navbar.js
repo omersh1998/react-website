@@ -158,8 +158,18 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin }) =
               placeholder="Search..."
               className="search-bar"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
             />
+            {showSuggestions && suggestions.length > 0 && (
+              <ul className="suggestions-list">
+                {suggestions.map(suggestion => (
+                  <li key={suggestion._id} onClick={() => handleSuggestionClick(suggestion.name)}>
+                    {suggestion.name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
         <div className="navbar-right">
@@ -215,10 +225,28 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin }) =
       <div className="secondary-navbar">
         <ul className="category-list">
           {categories.map(category => (
-            <li key={category.id} className="category-item">
+            <li
+              key={category.id}
+              className="category-item"
+              onMouseEnter={() => handleCategoryHover(category.id)}
+              onMouseLeave={() => handleCategoryLeave(category.id)}
+            >
               <Link to={`/category/${category.name.toLowerCase()}`} className="category-link">
                 {category.name}
               </Link>
+              {category.subcategories && (
+                <div id={`dropdown-${category.id}`} className="subcategory-dropdown">
+                  {category.subcategories.map((subcategory, index) => (
+                    <Link
+                      key={index}
+                      to={`/category/${category.name.toLowerCase()}/${subcategory.toLowerCase()}`}
+                      className="subcategory-link"
+                    >
+                      {subcategory}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </li>
           ))}
         </ul>

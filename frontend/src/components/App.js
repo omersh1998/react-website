@@ -4,6 +4,8 @@ import ProductList from './ProductList';
 import Register from './Register';
 import ProductDetail from './ProductDetail';
 import Navbar from './Navbar';
+import Footer from './Footer';
+import ChatBubble from './ChatBubble';
 import ShoppingCart from './ShoppingCart';
 import Filters from './Filters'; // Import the new Filters component
 import axios from '../axiosConfig'; // Import the configured Axios instance
@@ -189,6 +191,8 @@ const App = () => {
           </Routes>
         </div>
       </div>
+      <ChatBubble />
+      <Footer />
     </div>
   );
 };
