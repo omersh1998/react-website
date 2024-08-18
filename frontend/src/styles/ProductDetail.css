@@ -1,5 +1,6 @@
 /* ProductDetail.css */
 
+/* Container styles */
 .product-detail {
   display: flex;
   flex-direction: column;
@@ -105,6 +106,17 @@
 }
 
 /* Product Comments Section */
+.product-comments-card {
+  max-width: 1200px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px; /* Add space between product and comment card */
+}
+
 .product-comments {
   margin-top: 30px;
   padding-left: 20px;
@@ -122,10 +134,6 @@
   padding: 15px 0;
 }
 
-.comment p {
-  margin: 5px 0;
-}
-
 .comment:last-child {
   border-bottom: none; /* Remove border for the last comment */
 }
@@ -141,14 +149,12 @@
   margin: 5px 0;
 }
 
-/* Comment Date Styling */
 .comment-date {
   font-size: 0.9rem;
   color: #888;
   margin-top: 5px;
 }
 
-/* Comment Stars Styling */
 .comment-stars .star {
   font-size: 14px;
   margin-right: 2px;
@@ -162,69 +168,96 @@
   color: #ddd;
 }
 
-/* ProductDetail.css */
-
-.product-detail {
-  display: flex;
-  flex-direction: column; /* Changed to column to stack product and comments vertically */
-  align-items: center;
-  background-color: #f9f9f9;
-  padding: 20px;
+/* Edit Icon Styles */
+.edit-icon {
+  font-size: 1.5em;
+  cursor: pointer;
+  color: #007bff;
+  margin-top: 20px;
 }
 
-.product-comments-card {
-  max-width: 1200px;
-  width: 100%;
+.edit-icon:hover {
+  color: #0056b3;
+}
+
+/* Edit Form Styles */
+.edit-form {
+  margin-top: 20px;
+  padding: 20px;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 5px;
   background-color: #fff;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  margin-bottom: 20px; /* Add space between product and comment card */
 }
 
-/* Keep the same styling for the product-detail-left and product-detail-right */
-
-.product-comments-card {
+.edit-form h3 {
   margin-top: 0;
 }
 
-/* Comment Styling */
-.comment {
-  border-bottom: 1px solid #ddd;
-  padding: 15px 0;
+.edit-form label {
+  display: block;
+  margin-bottom: 10px;
 }
 
-.comment:last-child {
-  border-bottom: none;
-}
-
-.comment-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.comment p {
-  margin: 5px 0;
-}
-
-.comment-date {
-  font-size: 0.9rem;
-  color: #888;
+.edit-form input,
+.edit-form textarea {
+  width: 100%;
+  padding: 10px;
   margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.comment-stars .star {
-  font-size: 14px;
-  margin-right: 2px;
+.edit-form input[type="file"] {
+  padding: 0;
 }
 
-.comment-stars .star.filled {
-  color: #000;
+.image-previews {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.comment-stars .star.grey {
-  color: #ddd;
+.image-preview {
+  width: 100px;
+  height: auto;
+  border: 1px solid #ddd;
+}
+
+.edit-form button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1em;
+  margin-right: 10px;
+}
+
+.edit-form button:hover {
+  background-color: #218838;
+}
+
+.cancel-button {
+  background-color: #dc3545;
+}
+
+.cancel-button:hover {
+  background-color: #c82333;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1em;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
 }

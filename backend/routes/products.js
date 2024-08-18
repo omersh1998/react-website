@@ -84,6 +84,7 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   const { update } = req.body;
+  const imagesToAdd = update.images;
   try {
     const product = await Product.findOneAndUpdate({_id: req.params.id}, update);
     if (!product) {

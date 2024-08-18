@@ -181,7 +181,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/cart" element={<ShoppingCart cart={cart} clearCart={clearCart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
-            <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} />} />
+            <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} isAdmin={isAdmin} />} />
             <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
