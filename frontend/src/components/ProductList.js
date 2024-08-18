@@ -5,13 +5,12 @@ import Product from './Product'; // Adjust the path as needed
 import LoadingSpinner from './LoadingSpinner';
 import '../styles/ProductList.css'; // For your styles
 
-const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchProducts, sortOption, setSortOption }) => {
+const ProductList = ({ addToCart, setCurrentCategory, selectedFilters, searchProducts, sortOption, setSortOption, currentPage, setCurrentPage, isAdmin }) => {
   const { category, subcategory } = useParams();
   const [products, setProducts] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [error, setError] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(12);
 
   useEffect(() => {

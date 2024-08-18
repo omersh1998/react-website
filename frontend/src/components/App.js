@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import ProductList from './ProductList';
+import Register from './Register';
 import ProductDetail from './ProductDetail';
 import Navbar from './Navbar';
 import ShoppingCart from './ShoppingCart';
@@ -19,6 +20,8 @@ const App = () => {
   const [isShowFilter, setIsShowFilter] = useState(false);
   const [cartUpdated, setCartUpdated] = useState(false);
   const [sortOption, setSortOption] = useState(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const location = useLocation();
 
@@ -45,8 +48,9 @@ const App = () => {
   useEffect(() => {
     setSelectedFilters({});
     setSortOption(undefined);
+    setCurrentPage(1);
 
-    if (['/cart', '/product'].includes(location.pathname) || location.pathname.startsWith('/product')) {
+    if (['/cart', '/product', '/register'].includes(location.pathname) || location.pathname.startsWith('/product')) {
       // Reset filters when navigating to home page
       setIsShowFilter(false);
     } else {
@@ -160,7 +164,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <Navbar cartItemCount={cartItemCount} onSearch={searchProducts} cartUpdated={cartUpdated} />
+      <Navbar cartItemCount={cartItemCount} onSearch={searchProducts} cartUpdated={cartUpdated} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
       <div className="container">
         {isShowFilter && <div className={`filters-sidebar ${!showFilters ? 'hide-filters' : ''}`}>
           {currentCategory && (
@@ -175,12 +179,13 @@ const App = () => {
         </div>}
         <div className={isShowFilter ? "products-main" : "products-main flex-column"}>
           <Routes>
-            <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} />} />
+            <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/cart" element={<ShoppingCart cart={cart} clearCart={clearCart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
             <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} />} />
-            <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} />} />
-            <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} />} />
-            <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} />} />
+            <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
+            <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
+            <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </div>
       </div>

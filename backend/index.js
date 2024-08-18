@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const Product = require('./models/Product');
 const Category = require('./models/Category');
+const User = require('./models/User');
 
 // Express app
 const app = express();
@@ -52,6 +53,25 @@ app.get('/search', async (req, res) => {
     
     res.json(products);
   } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const currentUser = await User.findOne({ email, password }).exec();
+
+    const response = { success: false };
+
+    if (!!currentUser) {
+     response.success = true;
+    }
+
+    res.json({currentUser, ...response});
+  } catch (err) {
+    console.log(err.message);
     res.status(500).json({ message: err.message });
   }
 });

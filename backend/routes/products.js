@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
+const Comment = require("../models/Comment");
 
 // Get products
 router.post('/', async (req, res) => {
@@ -80,5 +81,41 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+router.put('/:id', async (req, res) => {
+  const { update } = req.body;
+  try {
+    const product = await Product.findOneAndUpdate({_id: req.params.id}, update);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.json({...product, message: 'Product Updated'});
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const product = await Product.findOneAndUpdate({_id: req.params.id}, {isDeleted: true});
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.json({...product, message: 'Product Deleted'});
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get('/:id/comments', async (req, res) => {
+  try {
+    const comments = await Comment.find({productId: req.params.id});
+    res.json(comments);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 module.exports = router;

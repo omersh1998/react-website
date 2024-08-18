@@ -4,11 +4,17 @@ import { FaShoppingCart } from 'react-icons/fa';
 import axios from '../axiosConfig';
 import '../styles/Navbar.css';
 
-const Navbar = ({ cartItemCount, onSearch, cartUpdated }) => {
+const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [username, setUsername] = useState(null); // State for tracking username
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Modal open/close state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -109,6 +115,32 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated }) => {
     };
   }, []);
 
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('/login', { email, password });
+      console.log(response.data);
+      if (response.data.success) {
+        setUsername(response.data.currentUser.userName); // Set username after successful login
+        setIsLoginModalOpen(false); // Close the modal
+        setErrorMessage('');
+        setIsAdmin(!!response.data.currentUser.isAdmin);
+      } else {
+        setErrorMessage('Invalid login credentials.');
+      }
+    } catch (error) {
+      setErrorMessage('Error during login.');
+    }
+  };
+
+  const logout = () => {
+    setUsername(null);
+  }
+
+  const cancelLogin = () => {
+    setIsLoginModalOpen(false);
+    setErrorMessage('');
+  }
+
   return (
     <div>
       {/* Main Navbar */}
@@ -117,6 +149,7 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated }) => {
           <Link to="/" className="logo">
             My Website
           </Link>
+          {username && <span className="navbar-username">Hello, {username}</span>}
         </div>
         <div className="navbar-center">
           <div className="search-container">
@@ -125,21 +158,16 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated }) => {
               placeholder="Search..."
               className="search-bar"
               value={query}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
+              onChange={(e) => setQuery(e.target.value)}
             />
-            {showSuggestions && suggestions.length > 0 && (
-              <ul className="suggestions-list">
-                {suggestions.map(suggestion => (
-                  <li key={suggestion._id} onClick={() => handleSuggestionClick(suggestion.name)}>
-                    {suggestion.name}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
         </div>
         <div className="navbar-right">
+          {!username ? (
+            <span className="login-link" onClick={() => setIsLoginModalOpen(true)}>Login</span>
+          ) : 
+            <span className="login-link" onClick={() => logout()}>Logout</span>
+          }
           <Link to="/cart" className={`navbar-cart ${cartUpdated ? 'cart-updated' : ''}`}>
             <FaShoppingCart className="cart-icon" />
             {cartItemCount > 0 && <span className="cart-count">{cartItemCount}</span>}
@@ -147,32 +175,50 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated }) => {
         </div>
       </div>
 
+      {/* Login Modal */}
+      {isLoginModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Login</h2>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button onClick={handleLogin}>Login</button>
+            <button onClick={cancelLogin}>Cancel</button>
+            <p>
+              Don't have an account yet?{' '}
+              <span 
+                className="register-link"
+                onClick={() => {
+                  setIsLoginModalOpen(false);
+                  navigate('/register');
+                }}
+              >
+                Register
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Secondary Navbar */}
       <div className="secondary-navbar">
         <ul className="category-list">
           {categories.map(category => (
-            <li
-              key={category.id}
-              className="category-item"
-              onMouseEnter={() => handleCategoryHover(category.id)}
-              onMouseLeave={() => handleCategoryLeave(category.id)}
-            >
+            <li key={category.id} className="category-item">
               <Link to={`/category/${category.name.toLowerCase()}`} className="category-link">
                 {category.name}
               </Link>
-              {category.subcategories && (
-                <div id={`dropdown-${category.id}`} className="subcategory-dropdown">
-                  {category.subcategories.map((subcategory, index) => (
-                    <Link
-                      key={index}
-                      to={`/category/${category.name.toLowerCase()}/${subcategory.toLowerCase()}`}
-                      className="subcategory-link"
-                    >
-                      {subcategory}
-                    </Link>
-                  ))}
-                </div>
-              )}
             </li>
           ))}
         </ul>

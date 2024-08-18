@@ -9,6 +9,7 @@ const ProductDetail = ({ addToCart }) => {
   const [loading, setLoading] = useState(true); // State for loading
   const [error, setError] = useState(null); // State for error
   const [selectedImage, setSelectedImage] = useState(''); // State for selected image
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -23,12 +24,42 @@ const ProductDetail = ({ addToCart }) => {
       }
     };
 
-    fetchProduct(); // Fetch product data when component mounts
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(`/products/${productId}/comments`);
+        setComments(response.data); // Set the comments data
+      } catch (err) {
+        console.error("Error fetching comments", err);
+      }
+    };
+
+    fetchProduct();
+    fetchComments();
   }, [productId]);
+
+  const renderStars = (rating) => {
+    const totalStars = 5;
+    const filledStars = Math.round(rating); // Round to the nearest star
+    const stars = [];
+
+    for (let i = 1; i <= totalStars; i++) {
+      stars.push(
+        <span key={i} className={`star ${i <= filledStars ? 'filled' : 'grey'}`}>
+          &#9733;
+        </span>
+      );
+    }
+
+    return stars;
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+  };
 
   if (loading) return <p>Loading...</p>; // Display loading message
   if (error) return <p>Error: {error}</p>; // Display error message
-
   if (!product) return <p>Product not found</p>; // Handle case where no product is found
 
   return (
@@ -50,6 +81,7 @@ const ProductDetail = ({ addToCart }) => {
             <img src={selectedImage} alt={product.name} />
           </div>
         </div>
+
         <div className="product-detail-right">
           <div className="product-info">
             <h2>{product.name}</h2>
@@ -59,6 +91,26 @@ const ProductDetail = ({ addToCart }) => {
           <div className="add-to-cart-wrapper">
             <button onClick={() => addToCart(product)} className="add-to-cart-button">Add to Cart</button>
           </div>
+        </div>
+      </div>
+
+      <div className="product-comments-card">
+        <div className="product-comments">
+          <h3>Customer Reviews</h3>
+          {comments.length === 0 ? (
+            <p>No reviews yet.</p>
+          ) : (
+            comments.map((comment, index) => (
+              <div key={index} className="comment">
+                <p>{formatDate(comment.createdAt)}</p>
+                <p><strong>{comment.userName || 'Anonymous'}</strong></p>
+                <p>{comment.text}</p>
+                <div className="comment-stars">
+                  {renderStars(comment.rating)} {/* Display stars based on comment rating */}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

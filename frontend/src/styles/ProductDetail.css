@@ -2,6 +2,7 @@
 
 .product-detail {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: #f9f9f9;
@@ -11,6 +12,7 @@
 .product-detail-container {
   display: flex;
   max-width: 1200px;
+  margin-bottom: 10px;
   width: 100%;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -100,4 +102,129 @@
 
 .add-to-cart-button:hover {
   background: #333;
+}
+
+/* Product Comments Section */
+.product-comments {
+  margin-top: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+}
+
+.product-comments h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.comment {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+}
+
+.comment p {
+  margin: 5px 0;
+}
+
+.comment:last-child {
+  border-bottom: none; /* Remove border for the last comment */
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.comment p {
+  margin: 5px 0;
+}
+
+/* Comment Date Styling */
+.comment-date {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 5px;
+}
+
+/* Comment Stars Styling */
+.comment-stars .star {
+  font-size: 14px;
+  margin-right: 2px;
+}
+
+.comment-stars .star.filled {
+  color: #000;
+}
+
+.comment-stars .star.grey {
+  color: #ddd;
+}
+
+/* ProductDetail.css */
+
+.product-detail {
+  display: flex;
+  flex-direction: column; /* Changed to column to stack product and comments vertically */
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+.product-comments-card {
+  max-width: 1200px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px; /* Add space between product and comment card */
+}
+
+/* Keep the same styling for the product-detail-left and product-detail-right */
+
+.product-comments-card {
+  margin-top: 0;
+}
+
+/* Comment Styling */
+.comment {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+}
+
+.comment:last-child {
+  border-bottom: none;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.comment p {
+  margin: 5px 0;
+}
+
+.comment-date {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 5px;
+}
+
+.comment-stars .star {
+  font-size: 14px;
+  margin-right: 2px;
+}
+
+.comment-stars .star.filled {
+  color: #000;
+}
+
+.comment-stars .star.grey {
+  color: #ddd;
 }
