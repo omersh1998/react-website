@@ -3,6 +3,9 @@ const router = express.Router();
 const Product = require("../models/Product");
 const Comment = require("../models/Comment");
 
+const upload = require('../utils/multerConfig');
+const path = require('path');
+
 // Get products
 router.post('/', async (req, res) => {
   try {
@@ -115,6 +118,35 @@ router.get('/:id/comments', async (req, res) => {
   } catch (err) {
     console.log(err.message);
     res.status(500).json({ message: err.message });
+  }
+});
+
+// Create new product endpoint
+router.post('/create-product', upload.array('images', 5), async (req, res) => {
+  try {
+    const { name, description, price, category, subcategory, rating, info } = req.body;
+
+    // Process uploaded images and generate URLs
+    const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+
+    // Create new product
+    const newProduct = new Product({
+      name,
+      description,
+      price,
+      category,
+      subcategory,
+      rating: { rate: rating },
+      info: JSON.parse(info), // info should be sent as a stringified JSON
+      images: imageUrls
+    });
+
+    await newProduct.save();
+
+    res.status(201).json({ message: 'Product created successfully', product: newProduct });
+  } catch (error) {
+    console.error('Error creating product:', error);
+    res.status(500).json({ message: 'Failed to create product' });
   }
 });
 

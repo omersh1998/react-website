@@ -6,6 +6,7 @@ import ProductDetail from './ProductDetail';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import ChatBubble from './ChatBubble';
+import CreateProduct from './CreateProduct';
 import ShoppingCart from './ShoppingCart';
 import Filters from './Filters'; // Import the new Filters component
 import axios from '../axiosConfig'; // Import the configured Axios instance
@@ -187,6 +188,7 @@ const App = () => {
             <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
+            <Route path="/create-product" element={<CreateProduct />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </div>

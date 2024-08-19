@@ -175,9 +175,13 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin }) =
           </div>
         </div>
         <div className="navbar-right">
+          {isAdmin && (
+            <div className="add-product-link">
+              <a href="/create-product">Add New Product</a>
+            </div>)}
           {!username ? (
             <span className="login-link" onClick={() => setIsLoginModalOpen(true)}>Login</span>
-          ) : 
+          ) :
             <span className="login-link" onClick={() => logout()}>Logout</span>
           }
           <Link to="/cart" className={`navbar-cart ${cartUpdated ? 'cart-updated' : ''}`}>
@@ -209,7 +213,7 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin }) =
             <button onClick={cancelLogin}>Cancel</button>
             <p>
               Don't have an account yet?{' '}
-              <span 
+              <span
                 className="register-link"
                 onClick={() => {
                   setIsLoginModalOpen(false);
