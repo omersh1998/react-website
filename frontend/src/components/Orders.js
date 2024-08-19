@@ -20,35 +20,39 @@ const Orders = ({ userId }) => {
     };
 
     fetchOrders();
-  }, []);
+  }, [userId]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="orders-page">
-      <h2>My Orders</h2>
-      <ul className="orders-list">
-        {orders.length === 0 ? (
-          <p>No orders found.</p>
-        ) : (
-          orders.map((order, index) => (
+      <h2 className="orders-heading">My Orders</h2>
+      {orders.length === 0 ? (
+        <p className="no-orders">No orders found.</p>
+      ) : (
+        <ul className="orders-list">
+          {orders.map((order, index) => (
             <li key={index} className="order-item">
+              <div className="order-date">
+                <strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}
+              </div>
               <div className="order-details">
-                <div className="order-date">{new Date(order.createdAt).toLocaleDateString()}</div>
-                <div className="order-items">
+                <ul className="order-items">
                   {order.products.map((item, idx) => (
-                    <div key={idx} className="order-item-details">
+                    <li key={idx} className="order-item-details">
                       {item.name} (x{item.quantity})
-                    </div>
+                    </li>
                   ))}
+                </ul>
+                <div className="order-price">
+                  <strong>Total Price:</strong> ${order.price.toFixed(2)}
                 </div>
-                <div className="order-price">${order.price.toFixed(2)}</div>
               </div>
             </li>
-          ))
-        )}
-      </ul>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

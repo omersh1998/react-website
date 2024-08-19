@@ -1,28 +1,62 @@
 .orders-page {
+  max-width: 900px;
+  margin: 0 auto;
   padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.orders-heading {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.no-orders {
+  text-align: center;
+  color: #777;
+  font-size: 18px;
 }
 
 .orders-list {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
 }
 
 .order-item {
-  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+  color: #333;
+}
+
+.order-date {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.order-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-items {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.order-item-details {
+  border-bottom: 1px solid #eee;
   padding: 10px 0;
   display: flex;
   justify-content: space-between;
 }
 
-.order-date {
-  flex: 1;
-}
-
-.order-items {
-  flex: 2;
-}
-
 .order-price {
-  flex: 1;
-  text-align: right;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
 }
