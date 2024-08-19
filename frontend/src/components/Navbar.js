@@ -179,7 +179,7 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin, use
         <div className="navbar-right">
           {isAdmin && (
             <div className="add-product-link">
-              <a href="/create-product">Add New Product</a>
+              <Link to="/create-product" className="add-new-product-link">Add New Product</Link>
             </div>)}
           {!username ? (
             <span className="login-link" onClick={() => setIsLoginModalOpen(true)}>Login</span>
