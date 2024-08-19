@@ -1,6 +1,7 @@
 'use strict';
 
 const multer = require('multer');
+const path = require('path');
 
 // Define storage for multer
 const storage = multer.diskStorage({

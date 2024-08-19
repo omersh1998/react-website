@@ -4,7 +4,6 @@ const Product = require("../models/Product");
 const Comment = require("../models/Comment");
 
 const upload = require('../utils/multerConfig');
-const path = require('path');
 
 // Get products
 router.post('/', async (req, res) => {
@@ -126,8 +125,12 @@ router.post('/create-product', upload.array('images', 5), async (req, res) => {
   try {
     const { name, description, price, category, subcategory, rating, info } = req.body;
 
+    const protocol = req.protocol;
+    const host = req.get('host');
+    const baseUrl = `${protocol}://${host}`;
+
     // Process uploaded images and generate URLs
-    const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+    const imageUrls = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
 
     // Create new product
     const newProduct = new Product({

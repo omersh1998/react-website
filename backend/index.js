@@ -6,6 +6,7 @@ const cors = require('cors');
 const Product = require('./models/Product');
 const Category = require('./models/Category');
 const User = require('./models/User');
+const path = require('path');
 
 // Express app
 const app = express();
@@ -15,6 +16,8 @@ const port = 5000;
 app.use(logger("dev"));
 app.use(cors());
 app.use(express.json());
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://omer:omersh123@cluster0.qqvyuqd.mongodb.net/react-store', {
