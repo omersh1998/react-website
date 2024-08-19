@@ -8,6 +8,7 @@ import Footer from './Footer';
 import ChatBubble from './ChatBubble';
 import CreateProduct from './CreateProduct';
 import ShoppingCart from './ShoppingCart';
+import Orders from './Orders';
 import Filters from './Filters'; // Import the new Filters component
 import axios from '../axiosConfig'; // Import the configured Axios instance
 import '../styles/App.css';
@@ -25,6 +26,7 @@ const App = () => {
   const [sortOption, setSortOption] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [username, setUsername] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const location = useLocation();
@@ -175,7 +177,8 @@ const App = () => {
         isAdmin={isAdmin}
         setIsAdmin={setIsAdmin}
         username={username}
-        setUsername={setUsername} />
+        setUsername={setUsername}
+        setUserId={setUserId} />
       <div className="container">
         {isShowFilter && <div className={`filters-sidebar ${!showFilters ? 'hide-filters' : ''}`}>
           {currentCategory && (
@@ -191,13 +194,14 @@ const App = () => {
         <div className={isShowFilter ? "products-main" : "products-main flex-column"}>
           <Routes>
             <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
-            <Route path="/cart" element={<ShoppingCart cart={cart} clearCart={clearCart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
+            <Route path="/cart" element={<ShoppingCart cart={cart} clearCart={clearCart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} userId={userId} />} />
             <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} isAdmin={isAdmin} username={username} />} />
             <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/create-product" element={<CreateProduct />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/orders" element={<Orders userId={userId} />} />
           </Routes>
         </div>
       </div>

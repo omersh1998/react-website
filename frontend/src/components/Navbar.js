@@ -4,7 +4,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 import axios from '../axiosConfig';
 import '../styles/Navbar.css';
 
-const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin, username, setUsername }) => {
+const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin, username, setUsername, setUserId }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -123,6 +123,7 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin, use
         setIsLoginModalOpen(false); // Close the modal
         setErrorMessage('');
         setIsAdmin(!!response.data.currentUser.isAdmin);
+        setUserId(response.data.currentUser._id);
 
         localStorage.setItem('user', JSON.stringify(response.data.currentUser));
       } else {
@@ -135,6 +136,7 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin, use
 
   const logout = () => {
     setUsername(null);
+    navigate('/');
   }
 
   const cancelLogin = () => {
@@ -151,6 +153,7 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin, use
             My Website
           </Link>
           {username && <span className="navbar-username">Hello, {username}</span>}
+          {username && <span className="navbar-orders"><Link to="/orders">My Orders</Link></span>}
         </div>
         <div className="navbar-center">
           <div className="search-container">

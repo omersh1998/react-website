@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import axios from '../axiosConfig'; // Import the configured Axios instance
 import { Payout, Confirmation } from '../modals/Payout';
 import '../styles/ShoppingCart.css';
 
-const ShoppingCart = ({ cart, clearCart, onQuantityChange, onRemoveFromCart }) => {
+const ShoppingCart = ({ cart, clearCart, onQuantityChange, onRemoveFromCart, userId }) => {
   const [showModal, setShowModal] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [boughtItems, setBoughtItemsn] = useState([]);
+  const [boughtItems, setBoughtItems] = useState([]);
 
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
   const totalCost = cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
@@ -14,11 +15,33 @@ const ShoppingCart = ({ cart, clearCart, onQuantityChange, onRemoveFromCart }) =
     setShowModal(true);
   };
 
-  const handleConfirmPayment = () => {
-    setBoughtItemsn(cart.slice());
-    console.log(boughtItems);
-    clearCart();
-    setShowConfirmation(true);
+  const handleConfirmPayment = async () => {
+    setBoughtItems(cart.slice());
+
+    // Prepare order data
+    const orderData = {
+      userId,
+      products: cart.map(item => ({
+        productId: item.product._id,
+        quantity: item.quantity
+      })),
+      price: totalCost
+    };
+
+    try {
+      // Send order data to the backend
+      await axios.post('/orders', orderData, {
+        headers: {
+          'Content-Type': 'application/json',
+          // Include any necessary headers like authentication tokens
+        }
+      });
+      clearCart(); // Clear cart on successful order placement
+      setShowConfirmation(true); // Show confirmation modal
+    } catch (error) {
+      console.error('Failed to place order:', error);
+      // Optionally show an error message to the user
+    }
   };
 
   return (

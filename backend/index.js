@@ -6,6 +6,7 @@ const cors = require('cors');
 const Product = require('./models/Product');
 const Category = require('./models/Category');
 const User = require('./models/User');
+const Order = require('./models/Order');
 const path = require('path');
 
 // Express app
@@ -35,10 +36,12 @@ db.once('open', () => {
 // Routes
 const productsRouter = require("./routes/products");
 const categoriesRouter = require("./routes/categories");
+const ordersRouter = require("./routes/orders");
 
 // App Routes
 app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
+app.use('/orders', ordersRouter);
 
 app.get('/search', async (req, res) => {
   try {
