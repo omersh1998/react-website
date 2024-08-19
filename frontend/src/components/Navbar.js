@@ -4,12 +4,11 @@ import { FaShoppingCart } from 'react-icons/fa';
 import axios from '../axiosConfig';
 import '../styles/Navbar.css';
 
-const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin }) => {
+const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin, username, setUsername }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [username, setUsername] = useState(null); // State for tracking username
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Modal open/close state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

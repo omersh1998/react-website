@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../axiosConfig'; // Ensure axios is configured correctly
 import '../styles/ProductDetail.css'; // Import your CSS file
 
-const ProductDetail = ({ addToCart, isAdmin }) => {
+const ProductDetail = ({ addToCart, isAdmin, username }) => {
   const { productId } = useParams(); // Get productId from URL parameters
   const navigate = useNavigate();
   const [product, setProduct] = useState(null); // State to hold product data
@@ -11,6 +11,8 @@ const ProductDetail = ({ addToCart, isAdmin }) => {
   const [error, setError] = useState(null); // State for error
   const [selectedImage, setSelectedImage] = useState(''); // State for selected image
   const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [newRating, setNewRating] = useState(1); // Default rating to 1
   const [isEditing, setIsEditing] = useState(false); // State for edit mode
   const [editProduct, setEditProduct] = useState({
     name: '',
@@ -108,7 +110,7 @@ const ProductDetail = ({ addToCart, isAdmin }) => {
         images: editProduct.images
       };
 
-      await axios.put(`/products/${productId}`, {update});
+      await axios.put(`/products/${productId}`, { update });
       // Reload the product data after saving
       const response = await axios.get(`/products/${productId}`);
       setProduct(response.data);
@@ -124,6 +126,19 @@ const ProductDetail = ({ addToCart, isAdmin }) => {
       navigate('/'); // Redirect to homepage after deletion
     } catch (err) {
       console.error("Error deleting product", err);
+    }
+  };
+
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+    try {
+      const userName = username || 'Anonymous';
+      const response = await axios.post(`/products/${productId}/comment`, { text: newComment, rating: newRating, userName });
+      setComments([...comments, response.data]); // Add the new comment to the list
+      setNewComment('');
+      setNewRating(1);
+    } catch (err) {
+      console.error("Error adding comment:", err);
     }
   };
 
@@ -214,6 +229,27 @@ const ProductDetail = ({ addToCart, isAdmin }) => {
               </div>
             ))
           )}
+          <form onSubmit={handleSubmitComment} className="comment-form">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Add your comment"
+              required
+            />
+            <div>
+              <label>Rating:</label>
+              {[1, 2, 3, 4, 5].map((rate) => (
+                <span
+                  key={rate}
+                  style={{ color: rate <= newRating ? 'black' : 'grey', cursor: 'pointer' }}
+                  onClick={() => setNewRating(rate)}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+            <button type="submit">Submit Comment</button>
+          </form>
         </div>
       </div>
     </div>

@@ -153,5 +153,17 @@ router.post('/create-product', upload.array('images', 5), async (req, res) => {
   }
 });
 
+router.post('/:id/comment', async (req, res) => {
+  try {
+    const { text, rating, userName } = req.body;
+    const newComment = new Comment({ productId: req.params.id, text, rating, userName, createdAt: new Date() });
+
+    await newComment.save();
+
+    res.status(201).json(newComment);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
 module.exports = router;

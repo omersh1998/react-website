@@ -24,6 +24,7 @@ const App = () => {
   const [cartUpdated, setCartUpdated] = useState(false);
   const [sortOption, setSortOption] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
+  const [username, setUsername] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const location = useLocation();
@@ -136,27 +137,27 @@ const App = () => {
   const handleFilterChange = (filterName, value) => {
     setSelectedFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
-  
+
       // Initialize filter array if it doesn't exist
       if (!newFilters[filterName]) {
         newFilters[filterName] = [];
       }
-  
+
       // Add or remove the filter value
       if (newFilters[filterName].includes(value)) {
         newFilters[filterName] = newFilters[filterName].filter((v) => v !== value);
       } else {
         newFilters[filterName].push(value);
       }
-  
+
       // Remove the filterName key if its array is empty
       if (newFilters[filterName].length === 0) {
         delete newFilters[filterName];
       }
-  
+
       return newFilters;
     });
-  };  
+  };
 
   const toggleFilterCategory = (filterName) => {
     setExpandedFilters((prev) => ({
@@ -167,11 +168,18 @@ const App = () => {
 
   return (
     <div className="App">
-      <Navbar cartItemCount={cartItemCount} onSearch={searchProducts} cartUpdated={cartUpdated} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
+      <Navbar
+        cartItemCount={cartItemCount}
+        onSearch={searchProducts}
+        cartUpdated={cartUpdated}
+        isAdmin={isAdmin}
+        setIsAdmin={setIsAdmin}
+        username={username}
+        setUsername={setUsername} />
       <div className="container">
         {isShowFilter && <div className={`filters-sidebar ${!showFilters ? 'hide-filters' : ''}`}>
           {currentCategory && (
-            <Filters 
+            <Filters
               filters={filters}
               selectedFilters={selectedFilters}
               handleFilterChange={handleFilterChange}
@@ -184,7 +192,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<ProductList selectedFilters={selectedFilters} products={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/cart" element={<ShoppingCart cart={cart} clearCart={clearCart} onQuantityChange={handleQuantityChange} onRemoveFromCart={removeFromCart} />} />
-            <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} isAdmin={isAdmin} />} />
+            <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} isAdmin={isAdmin} username={username} />} />
             <Route path="/search" element={<ProductList selectedFilters={selectedFilters} searchProducts={products} addToCart={addToCart} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/category/:category/:subcategory" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
             <Route path="/category/:category" element={<ProductList selectedFilters={selectedFilters} addToCart={addToCart} setCurrentCategory={setCurrentCategory} sortOption={sortOption} setSortOption={setSortOption} currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} />} />
