@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/ChatBubble.css'; // Import CSS for the chat bubble styles
 
 const ChatBubble = () => {
@@ -6,10 +6,19 @@ const ChatBubble = () => {
   const [messages, setMessages] = useState([]); // State to hold messages
   const [input, setInput] = useState(''); // State to hold the current input value
   const [isLoading, setIsLoading] = useState(false); // State to handle loading state
+  const [isFirstMessage, setIsFirstMessage] = useState(true); // State to check if welcome message is sent
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
   };
+
+  useEffect(() => {
+    if (isChatOpen && isFirstMessage) {
+      // Send the welcome message when the chat is first opened
+      setMessages([{ text: 'Welcome to tech support! How can we help you today?', type: 'tech' }]);
+      setIsFirstMessage(false); // Ensure the message is only sent once
+    }
+  }, [isChatOpen, isFirstMessage]);
 
   const handleInputChange = (e) => {
     setInput(e.target.value);

@@ -118,12 +118,14 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin }) =
   const handleLogin = async () => {
     try {
       const response = await axios.post('/login', { email, password });
-      console.log(response.data);
+
       if (response.data.success) {
         setUsername(response.data.currentUser.userName); // Set username after successful login
         setIsLoginModalOpen(false); // Close the modal
         setErrorMessage('');
         setIsAdmin(!!response.data.currentUser.isAdmin);
+
+        localStorage.setItem('user', JSON.stringify(response.data.currentUser));
       } else {
         setErrorMessage('Invalid login credentials.');
       }
