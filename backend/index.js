@@ -76,6 +76,25 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.post('/register', async (req, res) => {
+  try {
+    const { email, password, username, age } = req.body;
+
+    const currentUser = await User.insertMany([{ email, password, userName: username, age, isAdmin: false }]);
+
+    const response = { success: false };
+
+    if (!!currentUser) {
+     response.success = true;
+    }
+
+    res.json({currentUser, ...response});
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
