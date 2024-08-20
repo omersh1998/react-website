@@ -136,6 +136,8 @@ const Navbar = ({ cartItemCount, onSearch, cartUpdated, isAdmin, setIsAdmin, use
 
   const logout = () => {
     setUsername(null);
+    setIsAdmin(false);
+    setUserId(null);
     navigate('/');
   }
 
