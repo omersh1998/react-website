@@ -16,6 +16,12 @@ const ShoppingCart = ({ cart, clearCart, onQuantityChange, onRemoveFromCart, use
   };
 
   const handleConfirmPayment = async () => {
+    if (!userId) {
+      clearCart();
+      setShowConfirmation(true);
+      return;
+    }
+
     setBoughtItems(cart.slice());
 
     // Prepare order data
